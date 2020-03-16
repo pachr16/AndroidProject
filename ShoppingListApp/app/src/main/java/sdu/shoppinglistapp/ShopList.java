@@ -8,6 +8,11 @@ public class ShopList {
     private ArrayList<Integer> users = new ArrayList<>();
     private ArrayList<ShopItem> items = new ArrayList<>();
 
+    // for creating empty shoplist
+    public ShopList(int userid) {
+        this.time = System.currentTimeMillis();
+        this.users.add(userid);     // id of creating user, add further users with dedicated method
+    }
 
     public ShopList(int userid, ArrayList<ShopItem> items) {
         this.time = System.currentTimeMillis();

@@ -7,6 +7,12 @@ public class ShopItem {
     private int id = -1;
 
 
+    public ShopItem(String itemString, boolean checkmarked, User addedBy) {
+        this.itemString = itemString;
+        this.checkmarked = checkmarked;
+        this.addedBy = addedBy;
+    }
+
     public ShopItem(String itemString, boolean checkmarked, User addedBy, int id) {
         this.itemString = itemString;
         this.checkmarked = checkmarked;

@@ -3,14 +3,14 @@ package sdu.shoppinglistapp;
 import java.util.List;
 
 public class User {
-    string name;
-    string eMail;
-    string pasword;
+    String name;
+    String eMail;
+    String pasword;
     int userID;
     List<ShopList> subscribedShopLists;
 
 
-    public User(string name, string eMail, string pasword, int userID, List<ShopList> subscribedShopLists) {
+    public User(String name, String eMail, String pasword, int userID, List<ShopList> subscribedShopLists) {
         this.name = name;
         this.eMail = eMail;
         this.pasword = pasword;
@@ -19,15 +19,15 @@ public class User {
     }
 
 
-    public string getName() {
+    public String getName() {
         return name;
     }
 
-    public string geteMail() {
+    public String geteMail() {
         return eMail;
     }
 
-    public string getPasword() {
+    public String getPasword() {
         return pasword;
     }
 
@@ -51,19 +51,19 @@ public class User {
         setSubscribedShopLists(slist);
     }
 
-    public boolean addItem (newItem ShopItem, slist ShopList){
+    public boolean addItem (ShopItem newItem ,ShopList slist){
         //add item to shoplist
         boolean answer = false;
         return answer;// change when return is added from shoplist
     }
 
-    public boolean removeItem (newItem ShopItem, slist ShopList){
+    public boolean removeItem ( ShopItem newItem, ShopList slist){
         //remove item to shoplist
         boolean answer = false;
         return answer;// change when return is added from shoplist
     }
 
-    public void changeCheckmark(chekedItem ShopItem){
+    public void changeCheckmark(ShopItem chekedItem){
         //change checkmark on item
     }
 }

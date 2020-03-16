@@ -22,16 +22,8 @@ public class ShopItem {
         return itemString;
     }
 
-    public void setItemString(String itemString) {
-        this.itemString = itemString;
-    }
-
     public User getAddedBy() {
         return addedBy;
-    }
-
-    public void setAddedBy(User addedBy) {
-        this.addedBy = addedBy;
     }
 
     public boolean isCheckmarked() {

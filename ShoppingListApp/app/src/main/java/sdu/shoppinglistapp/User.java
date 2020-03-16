@@ -46,8 +46,7 @@ public class User {
     }
 
     public void newSList (){
-        ShopList slist;
-        //create a new slist
+        ShopList slist = new ShopList(userID);
         setSubscribedShopLists(slist);
     }
 

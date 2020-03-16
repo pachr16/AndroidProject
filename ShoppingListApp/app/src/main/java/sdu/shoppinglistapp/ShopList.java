@@ -59,4 +59,16 @@ public class ShopList {
         return items;
     }
 
+    // **** SETTERS BELOW HERE ****
+    public void setItems(ArrayList<ShopItem> items) {
+        this.items = items;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public void setUsers(ArrayList<Integer> users) {
+        this.users = users;
+    }
 }

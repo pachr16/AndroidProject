@@ -1,23 +1,44 @@
-package sdu.shoppinglistapp;
+package sdu.shoppinglistapp.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     String name;
     String eMail;
-    String pasword;
+    String password;
     int userID;
     List<ShopList> subscribedShopLists;
 
-
-    public User(String name, String eMail, String pasword, int userID, List<ShopList> subscribedShopLists) {
+    /**
+     * for creating users that have been given an id from the database
+     * @param name
+     * @param eMail
+     * @param password
+     * @param userID
+     * @param subscribedShopLists
+     */
+    public User(String name, String eMail, String password, int userID, List<ShopList> subscribedShopLists) {
         this.name = name;
         this.eMail = eMail;
-        this.pasword = pasword;
+        this.password = password;
         this.userID = userID;
         this.subscribedShopLists = subscribedShopLists;
     }
 
+    /**
+     * for registering new users in the system
+     * @param name
+     * @param email
+     * @param password
+     */
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.eMail = email;
+        this.password = password;
+        this.userID = -1;
+        this.subscribedShopLists = new ArrayList<ShopList>();
+    }
 
     public String getName() {
         return name;
@@ -28,7 +49,7 @@ public class User {
     }
 
     public String getPasword() {
-        return pasword;
+        return password;
     }
 
     public int getUserID() {

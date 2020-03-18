@@ -74,8 +74,10 @@ public class DbHandler {
         // TODO query database to check if the given email already exists in the database - return TRUE if it DOES
     }
 
+     */
+
     public User checkCredentials(String email, String pw) {
         // TODO query database to check that given email matches given password. Return the User object if it matches
         // TODO in case of mismatch, return a null object
-    }*/
+    }
 }

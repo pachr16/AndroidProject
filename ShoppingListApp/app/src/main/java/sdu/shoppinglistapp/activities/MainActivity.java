@@ -1,8 +1,10 @@
-package sdu.shoppinglistapp;
+package sdu.shoppinglistapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import sdu.shoppinglistapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

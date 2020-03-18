@@ -22,6 +22,7 @@ public class DbHandler {
     private DbHandler() {
     }
 
+    /*
     public int getUserid(String email) {
         // TODO query database to find userid for matching email
     }
@@ -76,5 +77,5 @@ public class DbHandler {
     public User checkCredentials(String email, String pw) {
         // TODO query database to check that given email matches given password. Return the User object if it matches
         // TODO in case of mismatch, return a null object
-    }
+    }*/
 }

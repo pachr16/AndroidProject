@@ -50,6 +50,8 @@ public class ShopList {
         this.time = System.currentTimeMillis();
     }
 
+    /*
+
     // *** METHODS TO MUTATE LISTS / ITEMS ON LISTS BELOW HERE ***
     // add / remove user from list
     public void addUserToList(String email) {
@@ -116,4 +118,6 @@ public class ShopList {
     public void setUsers(ArrayList<Integer> users) {
         this.users = users;
     }
+
+    */
 }

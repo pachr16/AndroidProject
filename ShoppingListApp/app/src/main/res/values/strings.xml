@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ShoppingListApp</string>
+    <string name="loginBtn">Login</string>
+    <string name="loginbtn_register">Register</string>
+    <string name="login_title">Login to your shopping app</string>
+    <string name="login_email_title">Email</string>
+    <string name="login_password_title">Password</string>
 </resources>

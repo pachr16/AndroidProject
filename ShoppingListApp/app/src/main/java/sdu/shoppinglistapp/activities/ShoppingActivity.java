@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import sdu.shoppinglistapp.R;
+
 public class ShoppingActivity extends AppCompatActivity {
 
     @Override

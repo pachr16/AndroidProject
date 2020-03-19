@@ -1,9 +1,14 @@
 package sdu.shoppinglistapp.persistence;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.*;
 
 import sdu.shoppinglistapp.business.ShopItem;
@@ -26,12 +31,12 @@ public class DbHandler {
     }
 
 
-    static String url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2018_group_9_db"; //fix to elefant
-    static String dbUsername = "si3_2018_group_9"; //fix to elefant
-    static String dbPassword = "copt22*viols"; //fix to elefant
+    static String url = "jdbc:postgres://vuzhhskd:ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis@balarama.db.elephantsql.com:5432/vuzhhskd"; //fix to elefant
+    static String dbUsername = "vuzhhskd"; //fix to elefant
+    static String dbPassword = "ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis"; //fix to elefant
 
     /**
-     * A template for a sql querry, change the return type and use of prerared
+     * A template for a sql query, change the return type and use of prepared
      * statement as needed
      */
     /*
@@ -53,7 +58,7 @@ public class DbHandler {
 
 
     public int getUserid(String email) {
-        int retID=-1;
+        int retID = -1;
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
@@ -69,6 +74,25 @@ public class DbHandler {
             Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retID;
+    }
+
+    public String getUserScreenname(String email) {
+        String ret = "";
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT users.screen_name FROM users WHERE users.email = ?");
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()){
+                ret = rs.getString("screen_name");
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ret;
     }
 
     public ShopItem addItem(ShopList slist, ShopItem item) {
@@ -145,17 +169,85 @@ public class DbHandler {
         }
     }
 
-    public HashMap<Integer, String> getUsername(List<Integer> userid) {
+    public HashMap<Integer, String> getUsernames(List<Integer> userid) {
         // TODO query database to get screenname from userids
         // evt lav stringbuilder og kør foreach over listen??
     }
 
     public ShopList getShopList(int slistid) {
         // TODO query database to get shoplist from id
+        ShopList slist;
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM lists WHERE lists.list_id = ?");
+            st.setInt(1, slistid);
+            ResultSet res = st.executeQuery();
+
+            while (res.next()) {
+                slist = new ShopList(res.getInt("list_id"), res.getString("list_name"), res.getLong("last_updated"), getItemsOnList(slistid), getUsersOnList(slistid));
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private HashMap<Integer, String> getUsersOnList(int slistid) {
+        HashMap<Integer, String> users = new HashMap<>();
+
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st1 = conn.prepareStatement("SELECT subscribed_to.user_id FROM subscribed_to WHERE subscribed_to.list_id = ?");
+            st1.setInt(1, slistid);
+            ResultSet res1 = st1.executeQuery();
+
+            ArrayList<Integer> userids = new ArrayList<>();
+            while (res1.next()) {
+                userids.add(res1.getInt("user_id"));
+            }
+
+            for (int u: userids) {
+                PreparedStatement st2 = conn.prepareStatement("SELECT users.screen_name FROM users WHERE users.user_id = ?");
+                st2.setInt(1, u);
+                ResultSet res2 = st2.executeQuery();
+
+                while (res2.next()) {
+                    users.put(u, res2.getString("screen_name"));
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return users;
+    }
+
+    private ArrayList<ShopItem> getItemsOnList(int slistid) {
+        ArrayList<ShopItem> items = new ArrayList<>();
+
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM items WHERE items.list_id = ?");
+            st.setInt(1, slistid);
+            ResultSet res = st.executeQuery();
+
+            while (res.next()) {
+                items.add(new ShopItem(res.getString("name"), res.getBoolean("checkmarked"), res.getString("added_by"), res.getInt("item_id")));
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return items;
     }
 
     public boolean hasShopListChanged(ShopList slist) {
-        boolean retBo = false; // prob shuld be true but to test that querry actualy works its set a false
+        boolean retBool = false; // prob should be true but to test that query actually works its set a false
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
@@ -163,17 +255,19 @@ public class DbHandler {
             st.setInt(1, slist.getId());
             ResultSet rs = st.executeQuery();
             while (rs.next()){
-                retBo = slist.getTime()!=rs.getLong("last_updated");
+                retBool = slist.getTime()!=rs.getLong("last_updated");
             }
 
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return retBo;
+        return retBool;
     }
 
     public ShopList createShopList(ShopList slist) {
-        int userid = slist.getUsers().get(0);
+        Map.Entry<Integer, String> entry = slist.getUsers().entrySet().iterator().next();
+        int userid = entry.getKey();
+
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
@@ -203,7 +297,7 @@ public class DbHandler {
             ResultSet rs = st.executeQuery();
 
             while (rs.next()){
-                user.setId(rs.getInt(user_id));
+                user.setId(rs.getInt("user_id"));
             }
 
         } catch (SQLException | ClassNotFoundException ex) {
@@ -213,7 +307,7 @@ public class DbHandler {
     }
 
     public boolean doesEmailExist(String email) {
-        boolean retbo = false;
+        boolean retBool = false;
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
@@ -221,12 +315,12 @@ public class DbHandler {
             st.setString(1, email);
             ResultSet rs = st.executeQuery();
 
-            retbo = rs.next();
+            retBool = rs.next();
 
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return retbo;
+        return retBool;
     }
 
     public List<ShopList> getShoplistOverview(User user) {

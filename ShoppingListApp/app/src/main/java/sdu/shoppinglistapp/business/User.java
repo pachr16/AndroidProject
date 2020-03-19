@@ -57,9 +57,9 @@ public class User {
         ShopList slist;
 
         if (givenName.equals("")) {
-            slist = new ShopList(userID);
+            slist = new ShopList(userID, this.name);
         } else {
-            slist = new ShopList(userID, givenName);
+            slist = new ShopList(userID, this.name, givenName);
         }
 
         slist.setId(dbh.createShopList(slist).getId());

@@ -1,6 +1,8 @@
 package sdu.shoppinglistapp.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import sdu.shoppinglistapp.persistence.DbHandler;
 
@@ -8,67 +10,55 @@ public class ShopList {
     private int id = -1;
     private String listName;
     private long time = 0;
-    private ArrayList<Integer> users = new ArrayList<>();
+    private HashMap<Integer, String> users = new HashMap<>();
     private ArrayList<ShopItem> items = new ArrayList<>();
     private DbHandler dbh = DbHandler.getInstance();  // instance of singleton DbHandler class
-    
+
     /**
      * for creating a new empty shoplist that has not yet been given id, nor a name
      * @param userid
      */
-    public ShopList(int userid) {
+    public ShopList(int userid, String screenname) {
         this.listName = "New Shopping List";
         this.time = System.currentTimeMillis();
-        this.users.add(userid);
+        this.users.put(userid, screenname);
     }
 
     /**
      * for creating empty shoplist that has not yet been given id, but has been given a name
      * @param userid
      */
-    public ShopList(int userid, String listName) {
+    public ShopList(int userid, String screenname, String listName) {
         this.listName = listName;
         this.time = System.currentTimeMillis();
-        this.users.add(userid);     // id of creating user, add further users with dedicated method
+        this.users.put(userid, screenname);     // id of creating user, add further users with dedicated method
     }
 
     /**
-     * for creating a new shoplist that already contains items
-     * @param userid
-     * @param items
-     */
-    public ShopList(int userid, String listName, ArrayList<ShopItem> items) {
-        this.time = System.currentTimeMillis();
-        this.listName = listName;
-        this.users.add(userid);     // id of creating user, add further users with dedicated method
-        this.items = items;
-    }
-
-    /**
-     * for creating an existing shoplist from the database
+     * for creating an existing shoplist from the database with multiple users
      * @param id
+     * @param listName
      * @param time
-     * @param userid
      * @param items
+     * @param users
      */
-    public ShopList(int id, String listName, long time, int userid, ArrayList<ShopItem> items) {
+    public ShopList(int id, String listName, long time, ArrayList<ShopItem> items, HashMap<Integer, String> users) {
         this.id = id;
         this.listName = listName;
         this.time = time;
-        this.users.add(userid);     // id of creating user, add further users with dedicated method
+        for (Map.Entry<Integer, String> entry: users.entrySet()) {
+            int u = entry.getKey();
+            String sn = entry.getValue();
+            this.users.put(u, sn);
+        }
         this.items = items;
-    }
-
-    // call whenever a list is mutated to update timestamp for last change in list
-    private void updateTimeStamp() {
-        this.time = System.currentTimeMillis();
     }
 
     // *** METHODS TO MUTATE LISTS / ITEMS ON LISTS BELOW HERE ***
     // add / remove user from list
     public void addUserToList(String email) {
         int userid = dbh.getUserid(email);
-        this.users.add(userid);
+        this.users.put(userid, dbh.getUserScreenname(email));
         this.updateTimeStamp();
         dbh.addUserToList(this, userid);
     }
@@ -122,7 +112,7 @@ public class ShopList {
         return time;
     }
 
-    public ArrayList<Integer> getUsers() {
+    public HashMap<Integer, String> getUsers() {
         return users;
     }
 
@@ -135,19 +125,12 @@ public class ShopList {
     }
 
     // *** SETTERS BELOW HERE ***
-    public void setItems(ArrayList<ShopItem> items) {
-        this.items = items;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public void setUsers(ArrayList<Integer> users) {
-        this.users = users;
-    }
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    // call whenever a list is mutated to update timestamp for last change in list
+    private void updateTimeStamp() {
+        this.time = System.currentTimeMillis();
     }
 }

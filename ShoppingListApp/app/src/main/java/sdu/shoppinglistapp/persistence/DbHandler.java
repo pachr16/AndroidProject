@@ -172,11 +172,13 @@ public class DbHandler {
     public HashMap<Integer, String> getUsernames(List<Integer> userid) {
         // TODO query database to get screenname from userids
         // evt lav stringbuilder og kør foreach over listen??
+
+        return null;
     }
 
     public ShopList getShopList(int slistid) {
         // TODO query database to get shoplist from id
-        ShopList slist;
+        ShopList slist = null;
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
@@ -191,6 +193,8 @@ public class DbHandler {
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        return slist;
     }
 
     private HashMap<Integer, String> getUsersOnList(int slistid) {
@@ -334,7 +338,7 @@ public class DbHandler {
             ResultSet rs = st.executeQuery();
 
             while (rs.next()){
-                retList.add(new ShopList(rs.getString("lists.list_name"), rs.getInt("lists.list_id")));
+                retList.add(new ShopList( rs.getInt("lists.list_id"), rs.getString("lists.list_name")));
             }
 
         } catch (SQLException | ClassNotFoundException ex) {
@@ -346,11 +350,15 @@ public class DbHandler {
         FROM lists
         WHERE lists.user_id = <value>
          */
+
+        return null;
     }
 
     public User checkCredentials(String email, String pw) {
         // TODO query database to check that given email matches given password. Return the User object if it matches
 
         // TODO in case of mismatch, return a null object
+
+        return null;
     }
 }

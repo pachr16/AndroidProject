@@ -3,12 +3,16 @@ package sdu.shoppinglistapp.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import sdu.shoppinglistapp.persistence.DbHandler;
+
 public class User {
-    String name;
-    String eMail;
-    String password;
-    int userID;
-    List<ShopList> subscribedShopLists;
+    private String name;
+    private String eMail;
+    private String password;
+    private int userID;
+    private List<ShopList> subscribedShopLists;
+    private DbHandler dbh = DbHandler.getInstance();
+
 
     /**
      * for creating users that have been given an id from the database
@@ -48,7 +52,7 @@ public class User {
         return eMail;
     }
 
-    public String getPasword() {
+    public String getPassword() {
         return password;
     }
 
@@ -61,30 +65,28 @@ public class User {
     }
 
 
-    public void setSubscribedShopLists(ShopList slist) {
+    public void addSubscribedShopList(ShopList slist) {
         this.subscribedShopLists.add(slist);
-        // update database
+        dbh.addUserToList(slist, this.userID);
     }
 
-    public void newSList (){
+    public void newSList () {
         ShopList slist = new ShopList(userID);
-        setSubscribedShopLists(slist);
+        addSubscribedShopList(slist);
     }
 
-    public boolean addItem (ShopItem newItem ,ShopList slist){
+    public void addItem (ShopItem newItem ,ShopList slist) {
         //add item to shoplist
-        boolean answer = false;
-        return answer;// change when return is added from shoplist
+        slist.addItem(newItem);
     }
 
-    public boolean removeItem ( ShopItem newItem, ShopList slist){
+    public void removeItem (ShopItem newItem, ShopList slist) {
         //remove item to shoplist
-        boolean answer = false;
-        return answer;// change when return is added from shoplist
+        slist.removeItem(newItem);
     }
 
-    public void changeCheckmark(ShopItem chekedItem){
-        //change checkmark on item
+    public void changeCheckmark(ShopItem checkedItem) {
+        checkedItem.flipCheckmarked();
     }
 
 }

@@ -13,7 +13,17 @@ public class ShopList {
     private DbHandler dbh = DbHandler.getInstance();  // instance of singleton DbHandler class
 
     /**
-     * for creating empty shoplist that has not yet been given id
+     * for creating a new empty shoplist that has not yet been given id, nor a name
+     * @param userid
+     */
+    public ShopList(int userid) {
+        this.listName = "New Shopping List";
+        this.time = System.currentTimeMillis();
+        this.users.add(userid);
+    }
+
+    /**
+     * for creating empty shoplist that has not yet been given id, but has been given a name
      * @param userid
      */
     public ShopList(int userid, String listName) {
@@ -119,5 +129,9 @@ public class ShopList {
 
     public void setUsers(ArrayList<Integer> users) {
         this.users = users;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

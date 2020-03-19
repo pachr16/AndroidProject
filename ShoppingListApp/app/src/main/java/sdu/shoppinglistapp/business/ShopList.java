@@ -11,7 +11,7 @@ public class ShopList {
     private ArrayList<Integer> users = new ArrayList<>();
     private ArrayList<ShopItem> items = new ArrayList<>();
     private DbHandler dbh = DbHandler.getInstance();  // instance of singleton DbHandler class
-
+    
     /**
      * for creating a new empty shoplist that has not yet been given id, nor a name
      * @param userid
@@ -80,7 +80,6 @@ public class ShopList {
 
     // add / remove items from list
     public void addItem(ShopItem item) {
-
         this.updateTimeStamp();
         this.items.add(dbh.addItem(this, item));  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
     }
@@ -95,6 +94,19 @@ public class ShopList {
         this.items.get(index).flipCheckmarked();
         this.updateTimeStamp();
         dbh.checkmark(this, item);  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
+    }
+
+    /**
+     * checks for updates for this id in the database and updates the current object to match
+     */
+    public void update() {
+        if (dbh.hasShopListChanged(this)) {
+            ShopList newList = dbh.getShopList(this.id);
+            this.items = newList.getItems();
+            this.users = newList.getUsers();
+            this.listName = newList.getName();
+            this.time = newList.getTime();
+        }
     }
 
     // *** GETTERS BELOW HERE ***
@@ -116,6 +128,10 @@ public class ShopList {
 
     public ArrayList<ShopItem> getItems() {
         return items;
+    }
+
+    public String getName() {
+        return this.listName;
     }
 
     // *** SETTERS BELOW HERE ***

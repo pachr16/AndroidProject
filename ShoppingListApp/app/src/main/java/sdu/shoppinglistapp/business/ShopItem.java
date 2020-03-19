@@ -55,7 +55,7 @@ public class ShopItem {
         }
     }
 
-    public void setId(int anInt) {
-        this.id = anInt;
+    public void setId(int id) {
+        this.id = id;
     }
 }

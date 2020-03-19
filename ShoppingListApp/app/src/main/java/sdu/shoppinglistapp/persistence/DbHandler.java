@@ -30,6 +30,32 @@ public class DbHandler {
     private DbHandler() {
     }
 
+
+    static String url = "jdbc:postgres://vuzhhskd:ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis@balarama.db.elephantsql.com:5432/vuzhhskd";
+    static String dbUsername = "vuzhhskd";
+    static String dbPassword = "ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis";
+
+    /**
+     * A template for a sql query, change the return type and use of prepared
+     * statement as needed
+     */
+    /*
+    private void queryTemplate(){
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+             PreparedStatement st = conn.prepareStatement("INSERT INTO persons (firstname, lastname) VALUES (?, ?)");
+            st.setString(1, person.getFName());
+            st.setString(2, person.getLName());
+            ResultSet rs = st.executeQuery();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+     */
+
     public int getUserid(String email) {
         int retID = -1;
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){

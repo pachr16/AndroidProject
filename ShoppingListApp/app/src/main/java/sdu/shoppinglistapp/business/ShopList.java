@@ -6,6 +6,7 @@ import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class ShopList {
     private int id = -1;
+    private String listName;
     private long time = 0;
     private ArrayList<Integer> users = new ArrayList<>();
     private ArrayList<ShopItem> items = new ArrayList<>();
@@ -15,7 +16,8 @@ public class ShopList {
      * for creating empty shoplist that has not yet been given id
      * @param userid
      */
-    public ShopList(int userid) {
+    public ShopList(int userid, String listName) {
+        this.listName = listName;
         this.time = System.currentTimeMillis();
         this.users.add(userid);     // id of creating user, add further users with dedicated method
     }
@@ -25,8 +27,9 @@ public class ShopList {
      * @param userid
      * @param items
      */
-    public ShopList(int userid, ArrayList<ShopItem> items) {
+    public ShopList(int userid, String listName, ArrayList<ShopItem> items) {
         this.time = System.currentTimeMillis();
+        this.listName = listName;
         this.users.add(userid);     // id of creating user, add further users with dedicated method
         this.items = items;
     }
@@ -38,8 +41,9 @@ public class ShopList {
      * @param userid
      * @param items
      */
-    public ShopList(int id, long time, int userid, ArrayList<ShopItem> items) {
+    public ShopList(int id, String listName, long time, int userid, ArrayList<ShopItem> items) {
         this.id = id;
+        this.listName = listName;
         this.time = time;
         this.users.add(userid);     // id of creating user, add further users with dedicated method
         this.items = items;
@@ -65,10 +69,10 @@ public class ShopList {
     }
 
     // add / remove items from list
-    public void addItem(ShopItem item) {
-        this.items.add(item);
+    public ShopItem addItem(ShopItem item) {
+
         this.updateTimeStamp();
-        dbh.addItem(this, item);  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
+        this.items.add(dbh.addItem(this, item));  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
     }
     public void removeItem(ShopItem item) {
         this.updateTimeStamp();

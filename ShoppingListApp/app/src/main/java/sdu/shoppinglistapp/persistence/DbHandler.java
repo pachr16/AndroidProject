@@ -1,6 +1,7 @@
 package sdu.shoppinglistapp.persistence;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.*;
@@ -116,30 +117,32 @@ public class DbHandler {
     }
 
     public void addUserToList(ShopList slist, int userid) {
-        // TODO query database to connect user with this userid to the given slist
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
 
-            PreparedStatement st = conn.prepareStatement("INSERT INTO lists(list_id, user_id) VALUES(?,?)"); //<list_id>, <user_id>)");
+            PreparedStatement st = conn.prepareStatement("INSERT INTO lists(list_id, user_id) VALUES(?,?)");
             st.setInt(1, slist.getId());
-            st.setInt(2, person.getLName());
-            ResultSet rs = st.executeQuery();
+            st.setInt(2, userid);
+            st.executeQuery();
 
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /*
-        INSERT INTO lists(list_id, user_id)
-        VALUES(<list_id>, <user_id>)
-         */
+
     }
 
     public void removeUserFromList(ShopList slist, int userid) {
-        // TODO query database to remove the given user from given slist
-        /*
-        DELETE FROM lists
-        WHERE lists.list_id = <value> AND lists.user_id = <value>
-         */
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("DELETE FROM lists WHERE lists.list_id = ? AND lists.user_id = ?");
+            st.setInt(1, slist.getId());
+            st.setInt(2, userid);
+            st.executeQuery();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public HashMap<Integer, String> getUsername(List<Integer> userid) {
@@ -152,44 +155,97 @@ public class DbHandler {
     }
 
     public boolean hasShopListChanged(ShopList slist) {
-        // TODO query database to see if timestamp has changed, return true if it has changed
-        /*
-        SELECT lists.last_updated
-        FROM lists
-        WHERE lists.list_id = <value>
-         */
+        boolean retBo = false; // prob shuld be true but to test that querry actualy works its set a false
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT lists.last_updated FROM lists WHERE lists.list_id = ?");
+            st.setInt(1, slist.getId());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()){
+                retBo = slist.getTime()!=rs.getLong("last_updated");
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return retBo;
     }
 
     public ShopList createShopList(ShopList slist) {
-        // TODO query database to create a new ShopList in the database
-        /*
-        INSERT INTO lists(user_id, list_name, last_updated)
-        VALUES(<user_id>, <list_name>, <last_updated>)
-        RETURNING lists.list_id
-         */
+        int userid = slist.getUsers().get(0);
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("INSERT INTO lists(user_id, list_name, last_updated) VALUES(?, ?, ?) RETURNING lists.list_id");
+            st.setInt(1, userid);
+            st.setString(2, slist.getName());
+            st.setLong(3,slist.getTime());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()){
+                slist.setId(rs.getInt(rs.getInt("list_id")));
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return slist;
     }
 
     public User registerUser(User user) {
-        // TODO query database to create a new User in the database
-        // TODO return the User object with the database-given id!
-        /*
-        INSERT INTO users(screen_name, email, password)
-        VALUES(<screen_name>, <email>, <password>)
-        RETURNING users.user_id
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
 
-         */
+            PreparedStatement st = conn.prepareStatement("INSERT INTO users(screen_name, email, password) VALUES(?, ?, ?) RETURNING users.user_id");
+            st.setString(1, user.getName());
+            st.setString(2, user.geteMail());
+            st.setString(2, user.getPassword());
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()){
+                user.setId(rs.getInt(user_id));
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return user;
     }
 
     public boolean doesEmailExist(String email) {
-        // TODO query database to check if the given email already exists in the database - return TRUE if it DOES
-        /*
-        SELECT users.email
-        FROM users
-        WHERE users.email = <value>
-         */
+        boolean retbo = false;
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT users.email FROM users WHERE users.email = ?");
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+
+            retbo = rs.next();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return retbo;
     }
 
     public List<ShopList> getShoplistOverview(User user) {
+        // TODO ramake this to load everything!!!!
+        ArrayList<ShopList> retList = new ArrayList<>();
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT lists.list_id, lists.list_name FROM lists WHERE lists.user_id = ?");
+            st.setInt(1, user.getUserID());
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()){
+                retList.add(new ShopList(rs.getString("lists.list_name"), rs.getInt("lists.list_id")));
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // TODO query database to get all shoplists that the User is a part of
         /*
         SELECT lists.list_id, lists.list_name

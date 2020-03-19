@@ -8,7 +8,7 @@ import sdu.shoppinglistapp.persistence.DbHandler;
 public class User {
     private String name;
     private String eMail;
-    private String password;
+    private String password = "";
     private int userID;
     private List<ShopList> subscribedShopLists;
     private DbHandler dbh = DbHandler.getInstance();
@@ -18,14 +18,12 @@ public class User {
      * for creating users that have been given an id from the database
      * @param name
      * @param eMail
-     * @param password
      * @param userID
      * @param subscribedShopLists
      */
-    public User(String name, String eMail, String password, int userID, List<ShopList> subscribedShopLists) {
+    public User(String name, String eMail, int userID, List<ShopList> subscribedShopLists) {
         this.name = name;
         this.eMail = eMail;
-        this.password = password;
         this.userID = userID;
         this.subscribedShopLists = subscribedShopLists;
     }
@@ -46,7 +44,7 @@ public class User {
 
     public void addSubscribedShopList(ShopList slist) {
         this.subscribedShopLists.add(slist);
-        dbh.addUserToList(slist, this.userID);
+        //dbh.addUserToList(slist, this.userID);  *** it is the responsibility of ShopList to tell the DB what users are connected to it
     }
 
     public void removeSubscribedShopList(ShopList slist) {

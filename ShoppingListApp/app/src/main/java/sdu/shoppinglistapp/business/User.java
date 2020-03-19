@@ -86,4 +86,5 @@ public class User {
     public void changeCheckmark(ShopItem chekedItem){
         //change checkmark on item
     }
+
 }

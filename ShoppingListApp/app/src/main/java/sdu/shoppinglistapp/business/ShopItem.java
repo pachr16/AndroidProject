@@ -54,4 +54,8 @@ public class ShopItem {
             checkmarked = true;
         }
     }
+
+    public void setId(int anInt) {
+        this.id = anInt;
+    }
 }

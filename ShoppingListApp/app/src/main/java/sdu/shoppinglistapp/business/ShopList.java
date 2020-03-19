@@ -69,7 +69,7 @@ public class ShopList {
     }
 
     // add / remove items from list
-    public ShopItem addItem(ShopItem item) {
+    public void addItem(ShopItem item) {
 
         this.updateTimeStamp();
         this.items.add(dbh.addItem(this, item));  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);

@@ -1,7 +1,9 @@
 package sdu.shoppinglistapp.persistence;
 
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.*;
 
 import sdu.shoppinglistapp.business.ShopItem;
 import sdu.shoppinglistapp.business.ShopList;
@@ -22,29 +24,86 @@ public class DbHandler {
     private DbHandler() {
     }
 
+
+    static String url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2018_group_9_db"; //fix to elefant
+    static String dbUsername = "si3_2018_group_9"; //fix to elefant
+    static String dbPassword = "copt22*viols"; //fix to elefant
+
+    /**
+     * A template for a sql querry, change the return type and use of prerared
+     * statement as needed
+     */
+    /*
+    private void queryTemplate(){
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+             PreparedStatement st = conn.prepareStatement("INSERT INTO persons (firstname, lastname) VALUES (?, ?)");
+            st.setString(1, person.getFName());
+            st.setString(2, person.getLName());
+            ResultSet rs = st.executeQuery();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+     */
+
+
     public int getUserid(String email) {
-        // TODO query database to find userid for matching email
-        //SELECT users.user_id
-        //FROM users
-        //WHERE users.email = email
+        int retID=-1;
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("SELECT users.user_id FROM users WHERE users.email = ?");
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()){
+                retID = rs.getInt("user_id");
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return retID;
     }
 
     public ShopItem addItem(ShopList slist, ShopItem item) {
-        ShopItem item;
-        // TODO query database to add items to list
-        /*
-        INSERT INTO items(name, added_by, checkmarked, list_id)
-        VALUES(<name>,<added_by>,<checkmarked>,<list_id>)
-         */
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("INSERT INTO items(name, added_by, checkmarked, list_id) VALUES(?,?,?,?) RETURNING items.item_id"); //<name>,<added_by>,<checkmarked>,<list_id>)");
+            st.setString(1, item.getItemString());
+            st.setString(2, item.getAddedBy());
+            st.setBoolean(3, item.isCheckmarked());
+            st.setInt(4, slist.getId());
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                item.setId(rs.getInt("items.item_id"));
+            }
+
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return item;
     }
 
     public void removeItem(ShopList slist, ShopItem item) {
-        // TODO query database to remove items from list
-        /*
-        DELETE FROM items
-        WHERE items.item_id = <value>
-         */
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("DELETE FROM items WHERE items.item_id = ?");
+            st.setInt(1, item.getId());
+            st.executeQuery();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void checkmark(ShopList slist, ShopItem item) {
@@ -58,6 +117,17 @@ public class DbHandler {
 
     public void addUserToList(ShopList slist, int userid) {
         // TODO query database to connect user with this userid to the given slist
+        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
+            Class.forName("org.postgresql.Driver");
+
+            PreparedStatement st = conn.prepareStatement("INSERT INTO lists(list_id, user_id) VALUES(?,?)"); //<list_id>, <user_id>)");
+            st.setInt(1, slist.getId());
+            st.setInt(2, person.getLName());
+            ResultSet rs = st.executeQuery();
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         /*
         INSERT INTO lists(list_id, user_id)
         VALUES(<list_id>, <user_id>)

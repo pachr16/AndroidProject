@@ -56,7 +56,6 @@ public class DbHandler {
 
      */
 
-
     public int getUserid(String email) {
         int retID = -1;
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){

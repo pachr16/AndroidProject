@@ -1,12 +1,13 @@
 package sdu.shoppinglistapp.business;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import sdu.shoppinglistapp.persistence.DbHandler;
 
-public class ShopList {
+public class ShopList implements Serializable {
     private int id = -1;
     private String listName;
     private long time = 0;

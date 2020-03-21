@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         User tmpUser = dbHandler.checkCredentials((email+""), (password+""));
 
-        if(tmpUser.geteMail().equals(email) && tmpUser.getPasword().equals(password)) {
+        if(tmpUser.geteMail().equals(email) && tmpUser.getPassword().equals(password)) {
             // TODO set user to logged in user (maybe save to "cache")
 
             Intent intent = new Intent(this, ShoppingActivity.class);

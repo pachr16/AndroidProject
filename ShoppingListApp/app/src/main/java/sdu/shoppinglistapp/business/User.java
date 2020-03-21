@@ -1,16 +1,16 @@
 package sdu.shoppinglistapp.business;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import sdu.shoppinglistapp.persistence.DbHandler;
 
-public class User {
+public class User implements Serializable {
     private String name;
     private String eMail;
     private String password = "";
     private int userID;
-    private List<ShopList> subscribedShopLists;
+    private ArrayList<ShopList> subscribedShopLists;
     private DbHandler dbh = DbHandler.getInstance();
 
 
@@ -21,7 +21,7 @@ public class User {
      * @param userID
      * @param subscribedShopLists
      */
-    public User(String name, String eMail, int userID, List<ShopList> subscribedShopLists) {
+    public User(String name, String eMail, int userID, ArrayList<ShopList> subscribedShopLists) {
         this.name = name;
         this.eMail = eMail;
         this.userID = userID;
@@ -70,7 +70,7 @@ public class User {
     }
 
     public void removeItem (ShopItem newItem, ShopList slist) {
-        //remove item to shoplist
+        //remove item from shoplist
         slist.removeItem(newItem);
     }
 
@@ -95,7 +95,7 @@ public class User {
         return userID;
     }
 
-    public List<ShopList> getSubscribedShopLists() {
+    public ArrayList<ShopList> getSubscribedShopLists() {
         return subscribedShopLists;
     }
 

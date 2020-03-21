@@ -4,7 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import sdu.shoppinglistapp.R;
+import sdu.shoppinglistapp.business.ShopItem;
+import sdu.shoppinglistapp.business.ShopList;
 import sdu.shoppinglistapp.business.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,6 +20,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // FOR TESTING PURPOSES:
+        ArrayList<ShopList> slist = new ArrayList<>();
+        ArrayList<ShopItem> ilist = new ArrayList<>();
+        ilist.add(new ShopItem("thisisanitem", false, "ThisisaScreenName", 0));
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(0, "ThisisaScreenName");
+        slist.add(new ShopList(0, "thisisalist", 109850923, ilist, map));
+        user = new User("Patrick", "email", 0, slist);
+
+        // END OF TESTING PURPOSES
 
         Log.d("MyTag", "onCreate: Main found");
     }
@@ -28,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(logIntent);
         } else {
             Intent shopIntent = new Intent(this, ShoppingActivity.class);
+            shopIntent.putExtra("User", user);
             startActivity(shopIntent);
         }
     }

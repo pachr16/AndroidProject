@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import sdu.shoppinglistapp.business.ShopItem;
 import sdu.shoppinglistapp.business.ShopList;
 import sdu.shoppinglistapp.business.User;
 
-public class DbHandler {
+public class DbHandler implements Serializable {
     private static DbHandler instance = null; // instance of singleton class
 
     // getinstance for singleton instance

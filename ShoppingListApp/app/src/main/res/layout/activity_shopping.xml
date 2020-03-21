@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".activities.ShoppingActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SOMETHING WORKS BUT I DIN´t KNOW WHY"
-        tools:layout_editor_absoluteX="64dp"
-        tools:layout_editor_absoluteY="284dp" />
+    <FrameLayout
+        android:id="@+id/bitch_please"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

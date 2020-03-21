@@ -16,18 +16,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.d("MyTag", "onCreate: Main found");
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        // checks if the user is logged in (i.e. not null), and sends them to login if no User object is found. Otherwise redirects to the shoppingActivity.
         if (user.equals(null)) {
-            // send to login activity
+            Intent logIntent = new Intent(this, LoginActivity.class);
+            startActivity(logIntent);
         } else {
-            // send to shoppingList activity
+            Intent shopIntent = new Intent(this, ShoppingActivity.class);
+            startActivity(shopIntent);
         }
+    }
+
+    // use to set the user after login
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return this.user;
     }
 }

@@ -55,7 +55,7 @@ public class ListOverviewFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("DEBUG", "onItemClick: " + id);
+                Log.d("DEBUG", "ListOverviewFragment onItemClick id: " + id);
                 ShopList list = user.getSubscribedShopLists().get((int)id);     // id we are given should be id for row of the list that was clicked. We're hoping its 0-indexed.
 
                 Fragment slf = new ShopListFragment(list);

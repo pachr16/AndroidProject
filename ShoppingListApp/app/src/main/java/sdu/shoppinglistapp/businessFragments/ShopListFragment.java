@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class ShopListFragment extends Fragment {
         itemView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("DEBUG", "ShopListFragment onItemClick id: " + id);
                 slist.checkmark(slist.getItems().get((int)id));     // id we are given should be id for row of the item that was clicked. We're hoping its 0-indexed.
             }
         });

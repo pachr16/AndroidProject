@@ -61,7 +61,7 @@ public class ListOverviewFragment extends Fragment {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 
                 ft.replace(R.id.bitch_please, slf);
-                ft.addToBackStack(null);
+                //ft.addToBackStack(null);
                 ft.commit();
             }
         });

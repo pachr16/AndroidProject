@@ -1,6 +1,8 @@
 package sdu.shoppinglistapp.business;
 
-public class ShopItem {
+import java.io.Serializable;
+
+public class ShopItem implements Serializable {
     private String itemString = "";
     private boolean checkmarked = false;
     private String addedBy;

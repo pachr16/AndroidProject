@@ -55,6 +55,8 @@ public class ShopList implements Serializable {
         this.items = items;
     }
 
+    /*
+
     // *** METHODS TO MUTATE LISTS / ITEMS ON LISTS BELOW HERE ***
     // add / remove user from list
     public void addUserToList(String email) {
@@ -90,6 +92,7 @@ public class ShopList implements Serializable {
     /**
      * checks for updates for this id in the database and updates the current object to match
      */
+    /*
     public void update() {
         if (dbh.hasShopListChanged(this)) {
             ShopList newList = dbh.getShopList(this.id);
@@ -134,4 +137,6 @@ public class ShopList implements Serializable {
     private void updateTimeStamp() {
         this.time = System.currentTimeMillis();
     }
+
+     */
 }

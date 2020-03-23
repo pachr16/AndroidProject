@@ -42,6 +42,7 @@ public class User implements Serializable {
         this.subscribedShopLists = new ArrayList<ShopList>();
     }
 
+    /*
     public void addSubscribedShopList(ShopList slist) {
         this.subscribedShopLists.add(slist);
         //dbh.addUserToList(slist, this.userID);  *** it is the responsibility of ShopList to tell the DB what users are connected to it
@@ -103,4 +104,6 @@ public class User implements Serializable {
     public void setId(int id) {
         this.userID = id;
     }
+
+     */
 }

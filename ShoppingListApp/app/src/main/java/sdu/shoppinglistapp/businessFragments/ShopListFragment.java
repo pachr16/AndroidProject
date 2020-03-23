@@ -39,9 +39,12 @@ public class ShopListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ArrayList<String> items = new ArrayList<>();
+        /*
         for (ShopItem i: slist.getItems()) {
             items.add(i.getItemString());
         }
+
+         */
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, items);
 
@@ -50,7 +53,7 @@ public class ShopListFragment extends Fragment {
 
         itemView = layout.findViewById(R.id.itemView);
         itemView.setAdapter(adapter);
-
+        /*
         itemView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,6 +61,8 @@ public class ShopListFragment extends Fragment {
                 slist.checkmark(slist.getItems().get((int)id));     // id we are given should be id for row of the item that was clicked. We're hoping its 0-indexed.
             }
         });
+
+         */
 
         return layout;
     }

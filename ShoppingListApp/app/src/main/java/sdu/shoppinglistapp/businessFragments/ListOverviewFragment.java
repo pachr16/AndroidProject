@@ -40,9 +40,12 @@ public class ListOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         List<String> listNames = new ArrayList<String>();
+        /*
         for (ShopList l: user.getSubscribedShopLists()) {
             listNames.add(l.getName());
         }
+
+         */
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, listNames);
 
@@ -51,6 +54,7 @@ public class ListOverviewFragment extends Fragment {
         listView = layout.findViewById(R.id.listView);
         listView.setAdapter(adapter);
 
+        /*
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +69,8 @@ public class ListOverviewFragment extends Fragment {
                 ft.commit();
             }
         });
+
+         */
         return layout;
     }
 }

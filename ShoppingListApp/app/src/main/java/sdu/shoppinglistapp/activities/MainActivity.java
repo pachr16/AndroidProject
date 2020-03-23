@@ -19,30 +19,19 @@ import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.business.ShopItem;
 import sdu.shoppinglistapp.business.ShopList;
 import sdu.shoppinglistapp.business.User;
+import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class MainActivity extends AppCompatActivity {
     private User user = null;
-    private FirebaseFirestore fdb = FirebaseFirestore.getInstance();
+    private DbHandler dbh = DbHandler.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fdb.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc: task.getResult()) {
-                                Log.d("***DEBUG", "onComplete: Succeeded in GET. Got this id: " + doc.getId() + ", with: " + doc.getData());
-                            }
-                        } else {
-                            Log.d("***DEBUG", "onComplete: Failed in GET");
-                        }
-                    }
-                });
+        String userid = dbh.getUserid("test@mail.dk");
+        Log.d("***DEBUG", "onCreate: FOUND USERID: " + userid);
 
         /*
         // FOR TESTING PURPOSES:
@@ -71,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             Intent logIntent = new Intent(this, LoginActivity.class);
             startActivity(logIntent);
         } else {
-            Log.d("***DEBUG", "onResume: User was: " + user.getName() + ", ref: " + user);
+            Log.d("***DEBUG", "onResume: User was: " + user);
             Intent shopIntent = new Intent(this, ShoppingActivity.class);
             shopIntent.putExtra("User", user);
             startActivity(shopIntent);

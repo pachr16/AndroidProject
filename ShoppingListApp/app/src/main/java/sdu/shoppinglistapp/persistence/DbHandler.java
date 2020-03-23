@@ -1,8 +1,18 @@
 package sdu.shoppinglistapp.persistence;
 
 import android.os.Build;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.sql.*;
@@ -18,6 +28,7 @@ import sdu.shoppinglistapp.business.User;
 
 public class DbHandler implements Serializable {
     private static DbHandler instance = null; // instance of singleton class
+    private FirebaseFirestore fdb = FirebaseFirestore.getInstance();
 
     // getinstance for singleton instance
     public static DbHandler getInstance() {
@@ -28,54 +39,35 @@ public class DbHandler implements Serializable {
     }
 
     // private constructor for singleton purposes
-    private DbHandler() {
-    }
+    private DbHandler() { }
 
 
-    static String url = "jdbc:postgres://vuzhhskd:ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis@balarama.db.elephantsql.com:5432/vuzhhskd";
-    static String dbUsername = "vuzhhskd";
-    static String dbPassword = "ZD0ylT9h9O6gBJK4tpNnYccuCL77Wjis";
+    public String getUserid(String email) {
+        final String[] ret = {""};
+        Query query = fdb.collection("users").whereEqualTo("email", email);
 
-    /**
-     * A template for a sql query, change the return type and use of prepared
-     * statement as needed
-     */
-    /*
-    private void queryTemplate(){
-        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
-            Class.forName("org.postgresql.Driver");
-
-             PreparedStatement st = conn.prepareStatement("INSERT INTO persons (firstname, lastname) VALUES (?, ?)");
-            st.setString(1, person.getFName());
-            st.setString(2, person.getLName());
-            ResultSet rs = st.executeQuery();
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-     */
-
-    public int getUserid(String email) {
-        int retID = -1;
-        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
-            Class.forName("org.postgresql.Driver");
-
-            PreparedStatement st = conn.prepareStatement("SELECT users.user_id FROM users WHERE users.email = ?");
-            st.setString(1, email);
-            ResultSet rs = st.executeQuery();
-
-            while (rs.next()){
-                retID = rs.getInt("user_id");
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult().getDocuments().get(0);
+                    if (doc.exists()) {
+                        ret[0] = doc.getId();
+                        Log.d("***DEBUG", "onComplete: Document exists!");
+                    } else {
+                        Log.d("***DEBUG", "onComplete: No such document!");
+                    }
+                } else {
+                    Log.d("***DEBUG", "onComplete: getUserId failed with: " + task.getException());
+                }
             }
+        });
 
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return retID;
+        Log.d("***DEBUG", "getUserid returns this id-string: " + ret[0]);
+        return ret[0];
     }
 
+    /*
     public String getUserScreenname(String email) {
         String ret = "";
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
@@ -387,4 +379,6 @@ public class DbHandler implements Serializable {
         // in case of mismatch, return a null object
         return ret;
     }
+
+     */
 }

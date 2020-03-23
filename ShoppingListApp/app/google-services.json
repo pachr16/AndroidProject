@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "58117507758",
+    "firebase_url": "https://shoplist-and.firebaseio.com",
+    "project_id": "shoplist-and",
+    "storage_bucket": "shoplist-and.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58117507758:android:c9e6357a00cc1b9c5e3b3f",
+        "android_client_info": {
+          "package_name": "sdu.shoppinglistapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58117507758-3iqkmcf69ho3h7v0p2jpnti8gp6i22u3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmfWcA6qJ3i3kEhTR8OSX3C7DXJgrODgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58117507758-3iqkmcf69ho3h7v0p2jpnti8gp6i22u3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

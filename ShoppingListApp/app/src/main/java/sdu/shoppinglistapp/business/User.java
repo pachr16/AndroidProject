@@ -48,7 +48,6 @@ public class User implements Serializable {
         //dbh.addUserToList(slist, this.userID);  *** it is the responsibility of ShopList to tell the DB what users are connected to it
     }
 
-    /*
     public void removeSubscribedShopList(ShopList slist) {
         slist.removeUser(this.userID);
     }
@@ -79,8 +78,6 @@ public class User implements Serializable {
     public void changeCheckmark(ShopList slist, ShopItem checkedItem) {
         slist.checkmark(checkedItem);
     }
-
-     */
 
     // *** GETTERS BELOW HERE ***
     public String getName() {

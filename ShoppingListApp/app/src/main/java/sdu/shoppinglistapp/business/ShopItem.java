@@ -6,7 +6,7 @@ public class ShopItem implements Serializable {
     private String itemString = "";
     private boolean checkmarked = false;
     private String addedBy;
-    private int id = -1;
+    private String id = "";
 
 
     /**
@@ -26,14 +26,14 @@ public class ShopItem implements Serializable {
      * @param username
      * @param id
      */
-    public ShopItem(String itemString, boolean checkmarked, String username, int id) {
+    public ShopItem(String itemString, boolean checkmarked, String username, String id) {
         this.itemString = itemString;
         this.checkmarked = checkmarked;
         this.addedBy = username;
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -57,7 +57,7 @@ public class ShopItem implements Serializable {
         }
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

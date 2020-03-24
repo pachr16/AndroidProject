@@ -8,7 +8,7 @@ import java.util.Map;
 import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class ShopList implements Serializable {
-    private int id = -1;
+    private String id = "";
     private String listName;
     private long time = 0;
     private HashMap<Integer, String> users = new HashMap<>();
@@ -43,7 +43,7 @@ public class ShopList implements Serializable {
      * @param items
      * @param users
      */
-    public ShopList(int id, String listName, long time, ArrayList<ShopItem> items, HashMap<Integer, String> users) {
+    public ShopList(String id, String listName, long time, ArrayList<ShopItem> items, HashMap<Integer, String> users) {
         this.id = id;
         this.listName = listName;
         this.time = time;
@@ -108,7 +108,9 @@ public class ShopList implements Serializable {
         return dbh.hasShopListChanged(this);
     }
 
-    public int getId() {
+     */
+
+    public String getId() {
         return id;
     }
 
@@ -129,7 +131,7 @@ public class ShopList implements Serializable {
     }
 
     // *** SETTERS BELOW HERE ***
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -137,6 +139,4 @@ public class ShopList implements Serializable {
     private void updateTimeStamp() {
         this.time = System.currentTimeMillis();
     }
-
-     */
 }

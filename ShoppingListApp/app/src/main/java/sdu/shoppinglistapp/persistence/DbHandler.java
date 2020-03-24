@@ -7,8 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -86,30 +89,27 @@ public class DbHandler implements Serializable {
         }
         return ret;
     }
+    */
 
     public ShopItem addItem(ShopList slist, ShopItem item) {
-        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
-            Class.forName("org.postgresql.Driver");
+        final Map<String, Object> map = new HashMap<>();
+        map.put("name", item.getItemString());
+        map.put("added_by", item.getAddedBy());
+        map.put("checkmarked", item.isCheckmarked());
 
-            PreparedStatement st = conn.prepareStatement("INSERT INTO items(name, added_by, checkmarked, list_id) VALUES(?,?,?,?) RETURNING items.item_id"); //<name>,<added_by>,<checkmarked>,<list_id>)");
-            st.setString(1, item.getItemString());
-            st.setString(2, item.getAddedBy());
-            st.setBoolean(3, item.isCheckmarked());
-            st.setInt(4, slist.getId());
+        fdb.collection("lists").document(slist.getId())
+                .collection("items").add(map)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        map.put("id", documentReference.getId());
+                    }
+                });
 
-            ResultSet rs = st.executeQuery();
-
-            while (rs.next()) {
-                item.setId(rs.getInt("items.item_id"));
-            }
-
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return item;
+        return new ShopItem((String)map.get("name"), (boolean)map.get("checkmarked"), (String)map.get("added_by"), (String)map.get("id"));
     }
 
+    /*
     public void removeItem(ShopList slist, ShopItem item) {
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");
@@ -123,35 +123,20 @@ public class DbHandler implements Serializable {
         }
     }
 
+     */
+
     public void checkmark(ShopList slist, ShopItem item) {
-        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
-            Class.forName("org.postgresql.Driver");
-
-            PreparedStatement st = conn.prepareStatement("UPDATE items SET checkmarked=? WHERE items.item_id = ?");
-            st.setBoolean(1, item.isCheckmarked());
-            st.setInt(2, item.getId());
-            st.executeQuery();
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        fdb.collection("lists").document(slist.getId())
+                .collection("items").document(item.getId())
+                .update("checkmarked", item.isCheckmarked());
     }
 
-    public void addUserToList(ShopList slist, int userid) {
-        try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
-            Class.forName("org.postgresql.Driver");
-
-            PreparedStatement st = conn.prepareStatement("INSERT INTO subscribed_to(list_id, user_id) VALUES(?,?)");
-            st.setInt(1, slist.getId());
-            st.setInt(2, userid);
-            st.executeQuery();
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DbHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+    public void addUserToList(ShopList slist, String userid) {
+        fdb.collection("users").document(userid)
+                .update("items", FieldValue.arrayUnion(slist.getId()));
     }
 
+    /*
     public void removeUserFromList(ShopList slist, int userid) {
         try(Connection conn = DriverManager.getConnection(url, dbUsername, dbPassword)){
             Class.forName("org.postgresql.Driver");

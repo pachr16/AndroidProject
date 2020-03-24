@@ -30,20 +30,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String userid = dbh.getUserid("test@mail.dk");
-        Log.d("***DEBUG", "onCreate: FOUND USERID: " + userid);
-
-        /*
         // FOR TESTING PURPOSES:
         ArrayList<ShopList> slist = new ArrayList<>();
+
         ArrayList<ShopItem> ilist = new ArrayList<>();
-        ilist.add(new ShopItem("thisisanitem", false, "ThisisaScreenName", 0));
-        HashMap<Integer, String> map = new HashMap<>();
-        map.put(0, "ThisisaScreenName");
-        slist.add(new ShopList(0, "thisisalist", 109850923, ilist, map));
-        user = new User("Patrick", "email", 0, slist);
+        ilist.add(new ShopItem("thisisanitem", false, "ThisisaScreenName", ""));
+
+        //slist.add(new ShopList(0, "thisisalist", 109850923, ilist, map));
+        //user = new User("Patrick", "email", "testuserid", slist);
+
+        /*
+        HashMap<String, String> map = new HashMap<>();
+        map.put("XuiWQTZXer531rw2Ay0A", "Patrick");
+        new ShopList("8LULHyPzkyNmRGguELTU", "Indkøbsliste", 0, ilist, map);
 
          */
+
 
         // END OF TESTING PURPOSES
 

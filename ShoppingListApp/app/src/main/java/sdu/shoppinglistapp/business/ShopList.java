@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -84,6 +86,8 @@ public class ShopList implements Serializable {
                     fdb.collection("users").document(doc_id)
                             .update("subscribed_to", FieldValue.arrayUnion(id));
 
+                    Log.d("***DEBUG", "onComplete: we found user with id: " + doc_id);
+
                 } else {
                     Log.d("***DEBUG", "onComplete: failed with exception: " + task.getException());
                 }
@@ -100,13 +104,33 @@ public class ShopList implements Serializable {
     }
 
     // add / remove items from list
-    public void addItem(ShopItem item) {
+    public void addItem(final ShopItem item) {
         this.updateTimeStamp();
-        this.items.add(dbh.addItem(this, item));  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("added_by", item.getAddedBy());
+        map.put("checkmarked", item.isCheckmarked());
+        map.put("name", item.getItemString());
+
+        fdb.collection("lists").document(id)
+                .collection("items").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    items.add(new ShopItem(item.getItemString(), item.isCheckmarked(), item.getAddedBy(), task.getResult().getId()));
+                } else {
+                    Log.d("***DEBUG", "onComplete: addItem in ShopList failed with: " + task.getException());
+                }
+            }
+        });
     }
     public void removeItem(ShopItem item) {
         this.updateTimeStamp();
-        dbh.removeItem(this, item);  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
+
+        fdb.collection("lists").document(id)
+                .collection("items").document(item.getId())
+                .delete();
+
         this.items.remove(item);
     }
 
@@ -114,26 +138,77 @@ public class ShopList implements Serializable {
         int index = this.items.indexOf(item);
         this.items.get(index).flipCheckmarked();
         this.updateTimeStamp();
-        dbh.checkmark(this, item);  // MAYBE THIS NEEDS TO BE CHANGED TO FIND THE MUTATED ITEM AT this.items.get(index);
+
+        fdb.collection("lists").document(id)
+                .collection("items").document(item.getId())
+                .update("checkmarked", item.isCheckmarked());
     }
+
 
     /**
      * checks for updates for this id in the database and updates the current object to match
      */
+    // er i gang med at lave denne om, men er i tvivl om den stadig er nødvendig
+    /*
     public void update() {
-        if (dbh.hasShopListChanged(this)) {
+        fdb.collection("lists").document(id)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    listName = (String)task.getResult().get("list_name");
+                    time = (long)task.getResult().get("last_updated");
+
+                    ArrayList<ShopItem> newItems = new ArrayList<>();
+                    Map<String, String> newUsers = new HashMap<>();
+
+                    for (Object i: task.getResult().get("items")) {
+
+                    }
+
+
+                } else {
+                    Log.d("***DEBUG", "onComplete: Failed updating shoplist with: " + task.getException());
+                }
+            }
+        });
+
+
             ShopList newList = dbh.getShopList(this.id);
             this.items = newList.getItems();
             this.users = newList.getUsers();
             this.listName = newList.getName();
             this.time = newList.getTime();
-        }
     }
 
+     */
+
     // *** GETTERS BELOW HERE ***
+
+    // er ikke sikker på at denne skal bruges længere ???
+    /*
     public boolean hasChanged() {
-        return dbh.hasShopListChanged(this);
+        boolean change = false;
+
+        fdb.collection("lists").document(id)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (time != (long)task.getResult().get("last_updated")) {
+                        change = true;
+                    }
+                } else {
+                    Log.d("***DEBUG", "onComplete: hasChanged() failed with: " + task.getException());
+                }
+            }
+        });
+
+        return change;
     }
+
+     */
+
 
     public String getId() {
         return id;
@@ -143,7 +218,7 @@ public class ShopList implements Serializable {
         return time;
     }
 
-    public HashMap<Integer, String> getUsers() {
+    public HashMap<String, String> getUsers() {
         return users;
     }
 

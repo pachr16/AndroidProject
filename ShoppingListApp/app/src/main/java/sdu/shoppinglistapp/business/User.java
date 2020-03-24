@@ -52,6 +52,7 @@ public class User implements Serializable {
         slist.removeUser(this.userID);
     }
 
+    /*
     public void newSList (String givenName) {
         ShopList slist;
 
@@ -78,6 +79,8 @@ public class User implements Serializable {
     public void changeCheckmark(ShopList slist, ShopItem checkedItem) {
         slist.checkmark(checkedItem);
     }
+
+     */
 
     // *** GETTERS BELOW HERE ***
     public String getName() {

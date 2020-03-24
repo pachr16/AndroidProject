@@ -9,7 +9,7 @@ public class User implements Serializable {
     private String name;
     private String eMail;
     private String password = "";
-    private int userID;
+    private String userID;
     private ArrayList<ShopList> subscribedShopLists;
     private DbHandler dbh = DbHandler.getInstance();
 
@@ -21,7 +21,7 @@ public class User implements Serializable {
      * @param userID
      * @param subscribedShopLists
      */
-    public User(String name, String eMail, int userID, ArrayList<ShopList> subscribedShopLists) {
+    public User(String name, String eMail, String userID, ArrayList<ShopList> subscribedShopLists) {
         this.name = name;
         this.eMail = eMail;
         this.userID = userID;
@@ -38,16 +38,17 @@ public class User implements Serializable {
         this.name = name;
         this.eMail = email;
         this.password = password;
-        this.userID = -1;
+        this.userID = "init";
         this.subscribedShopLists = new ArrayList<ShopList>();
     }
 
-    /*
+
     public void addSubscribedShopList(ShopList slist) {
         this.subscribedShopLists.add(slist);
         //dbh.addUserToList(slist, this.userID);  *** it is the responsibility of ShopList to tell the DB what users are connected to it
     }
 
+    /*
     public void removeSubscribedShopList(ShopList slist) {
         slist.removeUser(this.userID);
     }
@@ -79,6 +80,8 @@ public class User implements Serializable {
         slist.checkmark(checkedItem);
     }
 
+     */
+
     // *** GETTERS BELOW HERE ***
     public String getName() {
         return name;
@@ -92,7 +95,7 @@ public class User implements Serializable {
         return password;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
@@ -101,9 +104,7 @@ public class User implements Serializable {
     }
 
     // *** SETTERS BELOW HERE ***
-    public void setId(int id) {
+    public void setId(String id) {
         this.userID = id;
     }
-
-     */
 }

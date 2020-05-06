@@ -1,10 +1,8 @@
 package sdu.shoppinglistapp.persistence;
 
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -14,20 +12,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.*;
 
 import sdu.shoppinglistapp.business.ShopItem;
 import sdu.shoppinglistapp.business.ShopList;
-import sdu.shoppinglistapp.business.User;
 
 public class DbHandler implements Serializable {
     private static DbHandler instance = null; // instance of singleton class

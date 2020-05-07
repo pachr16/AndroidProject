@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +37,26 @@ public class DbHandler implements Serializable {
     // private constructor for singleton purposes
     private DbHandler() { }
 
+
+    public void createUser(String userId, String screenName) {
+        Map<String, String> user = new HashMap<>();
+        user.put("ScreenName", screenName);
+
+        fdb.collection("users").document(userId)
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("createUser", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("createUser", "Error Writing document", e);
+                    }
+                });
+    }
 
     public String getUserid(String email) {
         final String[] ret = {""};

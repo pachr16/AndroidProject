@@ -2,7 +2,6 @@ package sdu.shoppinglistapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import sdu.shoppinglistapp.R;
-import sdu.shoppinglistapp.businessFragments.RegisterUserFragment;
-import sdu.shoppinglistapp.persistence.DbHandler;
-import sdu.shoppinglistapp.business.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -69,15 +65,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
-    @Override
-    public void onStop(){
-        super.onStop();
-
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
+    public void updateUI(FirebaseUser currentUser) {
         if (currentUser != null) {
             Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
@@ -106,10 +97,5 @@ public class LoginActivity extends AppCompatActivity {
                         // ...
                     }
                 });
-    }
-
-    public void testRegister() {
-        Log.d("TEST", "Success!");
-
     }
 }

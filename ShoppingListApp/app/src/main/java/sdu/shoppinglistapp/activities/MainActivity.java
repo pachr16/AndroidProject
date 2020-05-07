@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +26,8 @@ import sdu.shoppinglistapp.business.ShopList;
 import sdu.shoppinglistapp.business.User;
 import sdu.shoppinglistapp.persistence.DbHandler;
 
+import static sdu.shoppinglistapp.activities.LoginActivity.mAuth;
+
 public class MainActivity extends AppCompatActivity {
     private User user = null;
     private DbHandler dbh = DbHandler.getInstance();
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         logout = findViewById(R.id.btn_logout);
@@ -86,6 +90,19 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(shopIntent);
 //        }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+    }
+
+//    private void updateUI(FirebaseUser currentUser) {
+//        if (currentUser == null) {
+//            Toast.makeText(this, "Please sign in", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(this, LoginActivity.class));
+//        }
+//    }
 
     // use to set the user after login
     public void setUser(User user) {

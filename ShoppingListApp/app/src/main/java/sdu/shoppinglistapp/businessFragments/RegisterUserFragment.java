@@ -37,18 +37,4 @@ public class RegisterUserFragment extends Fragment {
         return view;
     }
 
-    public void onStart() {
-        super.onStart();
-
-        btn_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginActivity login = (LoginActivity) getActivity();
-                login.testRegister();
-            }
-        });
-
-
-    }
-
 }

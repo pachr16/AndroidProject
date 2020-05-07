@@ -57,4 +57,27 @@ public class DbHandler implements Serializable {
                     }
                 });
     }
+
+    public String[] getUser(String userId) {
+        final String[] screenName = new String[1];
+        DocumentReference user = fdb.collection("users").document(userId);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("getUser", "DocumentSnapshot data: " + document.getData().get("ScreenName").toString());
+                        screenName[0] = document.getData().get("ScreenName").toString();
+                        Log.d("getUser", screenName[0]);
+                    } else {
+                        Log.d("getUser", "No such document");
+                    }
+                } else {
+                    Log.d("getUser", "get failed with ", task.getException());
+                }
+            }
+        });
+        return screenName;
+    }
 }

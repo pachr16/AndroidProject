@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,5 +30,12 @@ public class ShoppingActivity extends AppCompatActivity {
         transaction.replace(R.id.bitch_please, lof);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Toast.makeText(ShoppingActivity.this, "Text?", Toast.LENGTH_LONG).show();
     }
 }

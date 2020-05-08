@@ -1,12 +1,10 @@
 package sdu.shoppinglistapp.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,16 +14,18 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import sdu.shoppinglistapp.R;
-import sdu.shoppinglistapp.persistence.DbHandler;
-
-import static sdu.shoppinglistapp.activities.LoginActivity.mAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    DbHandler db = DbHandler.getInstance();
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef;
 
     EditText screenName;
     EditText email;
@@ -37,6 +37,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mAuth = FirebaseAuth.getInstance();
 
         screenName = findViewById(R.id.register_screenName);
         email = findViewById(R.id.register_email);
@@ -62,26 +64,56 @@ public class RegisterActivity extends AppCompatActivity {
 
                     mAuth.createUserWithEmailAndPassword(email.getText().toString(), password1.getText().toString())
                             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in currentUser's information
-                                Log.d("registerUser", "createUserWithEmail:success");
-                                FirebaseUser currentUser = mAuth.getCurrentUser();
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d("createNewUser", "createUserWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUI(user);
 
-                                //Create a user outside Authentication with newly created userID
-                                db.createUser(currentUser.getUid(), screenName.getText().toString());
+                                        Log.d("createNewUser", "onComplete: new user id = " + mAuth.getCurrentUser().getUid());
 
-                                updateUI(currentUser);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.d("registerUser", "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                                updateUI(null);
-                            }
-                        }
-                    });
+                                        myRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/screen_name");
+                                        myRef.setValue(screenName.getText().toString());
+
+                                        myRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/user_id");
+                                        myRef.setValue(mAuth.getCurrentUser().getUid());
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w("createNewUser", "createUserWithEmail:failure", task.getException());
+                                        Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        updateUI(null);
+                                    }
+
+                                    // ...
+                                }
+                            });
+
+
+//                    mAuth.createUserWithEmailAndPassword(email.getText().toString(), password1.getText().toString())
+//                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                // Sign in success, update UI with the signed-in currentUser's information
+//                                Log.d("registerUser", "createUserWithEmail:success");
+//                                FirebaseUser currentUser = mAuth.getCurrentUser();
+//
+//                                //Create a user outside Authentication with newly created userID
+//                                db.createUser(currentUser.getUid(), screenName.getText().toString());
+//
+//                                updateUI(currentUser);
+//                            } else {
+//                                // If sign in fails, display a message to the user.
+//                                Log.d("registerUser", "createUserWithEmail:failure", task.getException());
+//                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
+//                                        Toast.LENGTH_SHORT).show();
+//                                updateUI(null);
+//                            }
+//                        }
+//                    });
 
                 } else {
                     Toast.makeText(RegisterActivity.this, "Passwords don't match!", Toast.LENGTH_LONG).show();
@@ -102,7 +134,8 @@ public class RegisterActivity extends AppCompatActivity {
     public void updateUI(FirebaseUser currentUser) {
         if (currentUser != null) {
             Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+            Log.d("createNewUser", "updateUI: user logged in with id: " + mAuth.getCurrentUser().getUid());
+            startActivity(new Intent(this, ShoppingActivity.class));
         } else {
             Toast.makeText(this, "Please log in for access", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));

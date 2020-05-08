@@ -10,17 +10,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import sdu.shoppinglistapp.business.ShopItem;
-import sdu.shoppinglistapp.business.ShopList;
 
 public class DbHandler implements Serializable {
     private static DbHandler instance = null; // instance of singleton class
@@ -58,7 +52,7 @@ public class DbHandler implements Serializable {
                 });
     }
 
-    public String[] getUser(String userId) {
+    public String getUser(String userId) {
         final String[] screenName = new String[1];
         DocumentReference user = fdb.collection("users").document(userId);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -78,6 +72,6 @@ public class DbHandler implements Serializable {
                 }
             }
         });
-        return screenName;
+        return screenName[0];
     }
 }

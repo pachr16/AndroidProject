@@ -89,7 +89,7 @@ public class ShoppingActivity extends AppCompatActivity {
         btn_createList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(createList.getText().toString() != null) {
+                if(createList.getText().toString() != null || !createList.getText().toString().equals("")) {
                     createNewList();
                 } else {
                     Toast.makeText(ShoppingActivity.this, "Please enter a name for the Shopping list", Toast.LENGTH_SHORT).show();

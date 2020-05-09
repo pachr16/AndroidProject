@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +25,10 @@ import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class ShoppingActivity extends AppCompatActivity {
 
-    private User user;
-    TextView welcome;
-    DbHandler db = DbHandler.getInstance();
+    private TextView welcome;
+    private EditText createList;
+    private Button btn_createList;
+    private Button btn_viewAllLists;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -37,6 +41,10 @@ public class ShoppingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping);
+
+        createList = findViewById(R.id.shopping_createList);
+        btn_createList = findViewById(R.id.btn_shopping_createList);
+        btn_viewAllLists = findViewById(R.id.btn_shopping_viewLists);
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -75,6 +83,34 @@ public class ShoppingActivity extends AppCompatActivity {
             }
         });
 
+        btn_createList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(createList.getText().toString() != null) {
+                    createNewList();
+                } else {
+                    Toast.makeText(ShoppingActivity.this, "Please enter a name for the Shopping list", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void createNewList() {
+        String listName = (mAuth.getCurrentUser().getUid() + "_" + createList.getText().toString());
+
+        myRef = mFirebaseDatabase.getReference("shoppingLists/" + listName);
+
+        myRef.child("listName").setValue(createList.getText().toString());
+
+        myRef = mFirebaseDatabase.getReference("shoppingLists/" + mAuth.getCurrentUser().getUid() + "_" + createList.getText().toString() + "/subscribers");
+        myRef.child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+
+        myRef = mFirebaseDatabase.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
+        myRef.child(listName).setValue(listName);
+
+        Toast.makeText(ShoppingActivity.this, "List created", Toast.LENGTH_SHORT).show();
+        createList.setText("");
     }
 
     @Override

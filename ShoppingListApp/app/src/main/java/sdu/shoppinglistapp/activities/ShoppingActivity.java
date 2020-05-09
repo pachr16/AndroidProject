@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.business.User;
 import sdu.shoppinglistapp.persistence.DbHandler;
@@ -98,13 +101,14 @@ public class ShoppingActivity extends AppCompatActivity {
 
     private void createNewList() {
         String listName = (mAuth.getCurrentUser().getUid() + "_" + createList.getText().toString());
+        Map<String, Object> taskMap = new HashMap<>();
 
         myRef = mFirebaseDatabase.getReference("shoppingLists/" + listName);
 
         myRef.child("listName").setValue(createList.getText().toString());
 
         myRef = mFirebaseDatabase.getReference("shoppingLists/" + mAuth.getCurrentUser().getUid() + "_" + createList.getText().toString() + "/subscribers");
-        myRef.child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+        myRef.push().setValue(mAuth.getCurrentUser().getUid());
 
         myRef = mFirebaseDatabase.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
         myRef.child(listName).setValue(listName);

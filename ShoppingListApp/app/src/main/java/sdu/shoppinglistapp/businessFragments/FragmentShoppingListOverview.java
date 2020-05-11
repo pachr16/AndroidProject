@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ public class FragmentShoppingListOverview extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
+    private DatabaseReference subRef;
 
     @Nullable
     @Override
@@ -42,24 +44,51 @@ public class FragmentShoppingListOverview extends Fragment {
         final ArrayList<String> subList = new ArrayList<>();
         final ArrayList<String> shoplistOverview = new ArrayList<>();
 
+        mAuth = FirebaseAuth.getInstance();
+        String userId = mAuth.getCurrentUser().getUid();
+        subRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
+
+        subRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("sublist", "onDataChange: something");
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d("sublist", "onDataChange: value: " + ds.getValue().toString());
+                    String[] strArray = (ds.getValue().toString()).split("_");
+                    subList.add(strArray[1]);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         final ArrayAdapter arrayAdapter = new ArrayAdapter((ShoppingActivity) getActivity(), android.R.layout.simple_list_item_1, shoplistOverview);
 
         listView.setAdapter(arrayAdapter);
 
-        mAuth = FirebaseAuth.getInstance();
-        String userId = mAuth.getCurrentUser().getUid();
 
-        myRef = database.getReference("users/" + userId + "/subscribed_to");
+        myRef = database.getReference("shoppingLists");
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String entryOnList = dataSnapshot.getValue(String.class);
-                String[] listNameParts = entryOnList.split("_");
-                String listName = listNameParts[1];
-                shoplistOverview.add(listName);
-                arrayAdapter.notifyDataSetChanged();
+                Log.d("test", "onChildAdded: " + dataSnapshot.child("listName").getValue());
 
+                if (subList.contains(dataSnapshot.child("listName").getValue())) {
+                    Log.d("test", "onChildAdded: snapshot: " + dataSnapshot.getKey());
+
+                    shoplistOverview.add(dataSnapshot.child("listName").getValue().toString());
+                    arrayAdapter.notifyDataSetChanged();
+
+                }
+//                String entryOnList = dataSnapshot.getValue(String.class);
+//                String[] listNameParts = entryOnList.split("_");
+//                String listName = listNameParts[1];
+//                shoplistOverview.add(listName);
+//                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override

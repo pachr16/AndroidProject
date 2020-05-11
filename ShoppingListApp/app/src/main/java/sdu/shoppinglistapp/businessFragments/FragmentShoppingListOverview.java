@@ -1,6 +1,7 @@
 package sdu.shoppinglistapp.businessFragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,12 +64,15 @@ public class FragmentShoppingListOverview extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                String[] childToRemove = dataSnapshot.getKey().split("_");
+                int index = shoplistOverview.indexOf(childToRemove[1]);
+                shoplistOverview.remove(index);
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override

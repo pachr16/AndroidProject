@@ -1,5 +1,6 @@
 package sdu.shoppinglistapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import sdu.shoppinglistapp.business.SectionsStatePagerAdapter;
 import sdu.shoppinglistapp.businessFragments.FragmentShoppingListContent;
 import sdu.shoppinglistapp.businessFragments.FragmentShoppingListOverview;
 import sdu.shoppinglistapp.businessFragments.FragmentShoppingMain;
+import sdu.shoppinglistapp.services.ListService;
 
 
 public class ShoppingActivity extends AppCompatActivity {
@@ -44,6 +46,12 @@ public class ShoppingActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
 
         setupViewPager(mViewPager);
+
+
+        //Start ListService, to notify user when one of their subscribed lists change
+        Intent intent = new Intent(this, ListService.class);
+
+        startService(intent);
     }
 
     private void setupViewPager(ViewPager viewPager){

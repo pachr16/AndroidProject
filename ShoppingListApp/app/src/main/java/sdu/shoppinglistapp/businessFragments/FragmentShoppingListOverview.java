@@ -56,7 +56,9 @@ public class FragmentShoppingListOverview extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String entryOnList = dataSnapshot.getValue(String.class);
-                shoplistOverview.add(entryOnList);
+                String[] listNameParts = entryOnList.split("_");
+                String listName = listNameParts[1];
+                shoplistOverview.add(listName);
                 arrayAdapter.notifyDataSetChanged();
 
             }

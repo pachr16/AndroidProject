@@ -1,6 +1,7 @@
 package sdu.shoppinglistapp.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -26,7 +27,7 @@ import sdu.shoppinglistapp.businessFragments.FragmentShoppingMain;
 
 public class ShoppingActivity extends AppCompatActivity {
 
-    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
@@ -38,6 +39,8 @@ public class ShoppingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mSectionStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
 
@@ -59,17 +62,19 @@ public class ShoppingActivity extends AppCompatActivity {
     }
 
     public void createNewList(String listName) {
-        Map<String, Object> taskMap = new HashMap<>();
+        Log.d("login", "createNewList: userid = " + mAuth.getCurrentUser().getUid());
 
-        myRef = mFirebaseDatabase.getReference("shoppingLists/" + listName);
+        String listId = mAuth.getCurrentUser().getUid() + "_" + listName;
+
+        myRef = mFirebaseDatabase.getReference("shoppingLists/" + listId);
 
         myRef.child("listName").setValue(listName);
 
-        myRef = mFirebaseDatabase.getReference("shoppingLists/" + mAuth.getCurrentUser().getUid() + "_" + listName + "/subscribers");
+        myRef = mFirebaseDatabase.getReference("shoppingLists/" + listId + "/subscribers");
         myRef.push().setValue(mAuth.getCurrentUser().getUid());
 
         myRef = mFirebaseDatabase.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
-        myRef.child(listName).setValue(listName);
+        myRef.child(listId).setValue(listId);
 
         Toast.makeText(ShoppingActivity.this, "List created", Toast.LENGTH_SHORT).show();
     }

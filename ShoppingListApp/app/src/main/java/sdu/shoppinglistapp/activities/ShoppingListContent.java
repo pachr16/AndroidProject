@@ -18,19 +18,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import java.util.ArrayList;
 
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.business.ContentAdapter;
-import sdu.shoppinglistapp.business.FragmentCommunication;
 import sdu.shoppinglistapp.business.ShopItem;
 
 public class ShoppingListContent extends AppCompatActivity {
-
-    EventBus bus = EventBus.getDefault();
 
     ListView content;
     EditText amount;
@@ -48,7 +42,8 @@ public class ShoppingListContent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list_content);
 
-        bus.register(this);
+        listId = getIntent().getExtras().getString("listId");
+        Log.d("listId", "onCreate: " + listId);
 
 
         final ArrayList<ShopItem> contentList = new ArrayList<>();
@@ -68,18 +63,39 @@ public class ShoppingListContent extends AppCompatActivity {
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //if(!dataSnapshot.child("product").getValue().equals("")) {
-                Log.d("ItemOnList", "onChildAdded: entered added method");
-                contentList.add(new ShopItem(dataSnapshot.child("amount").getValue().toString(), dataSnapshot.child("product").getValue().toString(), (Boolean) dataSnapshot.child("picked").getValue()));
-                Log.d("ItemOnList", "onChildAdded: " + contentList.get(0).getProduct());
-                contentAdapter.notifyDataSetChanged();
-                //}
+                if(dataSnapshot.child("picked").getValue() != null) {
+                    Log.d("something", "onChildAdded: picked = " + dataSnapshot.child("picked").getValue().toString());
+                    if (product.getText().toString() == "" || amount.getText().toString() == "") {
+                        Toast.makeText(ShoppingListContent.this, "Unable to add nothing to the list", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        ShopItem newItem = new ShopItem(dataSnapshot.child("amount").getValue().toString(), dataSnapshot.child("product").getValue().toString(), dataSnapshot.child("picked").getValue().toString());
+
+                        Log.d("ItemOnList", "onChildAdded: entered added method");
+                        contentList.add(newItem);
+                        Log.d("ItemOnList", "onChildAdded: " + contentList.get(0).getProduct());
+                        contentAdapter.notifyDataSetChanged();
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("ItemOnList", "onChildAdded: changed " + contentList.get(0).getProduct());
-                contentAdapter.notifyDataSetChanged();
+                //Added the same code as when adding as the list doesn't update realtime to new entries
+                if(dataSnapshot.child("picked").getValue() != null) {
+                    Log.d("something", "onChildAdded: picked = " + dataSnapshot.child("picked").getValue().toString());
+                    if (product.getText().toString() == "" || amount.getText().toString() == "") {
+                        Toast.makeText(ShoppingListContent.this, "Unable to add nothing to the list", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        ShopItem newItem = new ShopItem(dataSnapshot.child("amount").getValue().toString(), dataSnapshot.child("product").getValue().toString(), dataSnapshot.child("picked").getValue().toString());
+
+                        Log.d("ItemOnList", "onChildAdded: entered added method");
+                        contentList.add(newItem);
+                        Log.d("ItemOnList", "onChildAdded: " + contentList.get(0).getProduct());
+                        contentAdapter.notifyDataSetChanged();
+                    }
+                }
             }
 
             @Override
@@ -121,11 +137,5 @@ public class ShoppingListContent extends AppCompatActivity {
 
         myRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/picked");
         myRef.setValue("false");
-    }
-
-    @Subscribe
-    public void onEvent(FragmentCommunication event) {
-        listId = event.getNewText();
-        Log.d("EventBus", "onEvent: listId = " + listId);
     }
 }

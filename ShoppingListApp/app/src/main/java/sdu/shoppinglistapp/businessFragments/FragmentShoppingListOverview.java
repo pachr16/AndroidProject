@@ -22,20 +22,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.activities.ShoppingActivity;
 import sdu.shoppinglistapp.activities.ShoppingListContent;
-import sdu.shoppinglistapp.business.FragmentCommunication;
 import sdu.shoppinglistapp.business.OverViewAdapter;
 import sdu.shoppinglistapp.business.ShoppingList;
 
 public class FragmentShoppingListOverview extends Fragment {
-
-    EventBus bus = EventBus.getDefault();
 
     ListView listView;
 
@@ -129,15 +124,12 @@ public class FragmentShoppingListOverview extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText((ShoppingActivity)getActivity(), shoplistOverview.get(position).getName(), Toast.LENGTH_SHORT).show();
 
-                //Sending the id of the clicked list to the bus in order to get this id for the listner on the list fragment
+
                 String tmpId = shoplistOverview.get(position).getId();
                 Log.d("EventBus", "onItemClick: tmpId = " + tmpId);
-                FragmentCommunication event = new FragmentCommunication();
-                event.setNewText(tmpId);
-                EventBus.getDefault().post(event);
-
-                //Changing to ListContent fragment which is index 2 in the ViewPager
-                startActivity(new Intent((ShoppingActivity)getContext(), ShoppingListContent.class));
+                Intent intent = new Intent((ShoppingActivity)getContext(), ShoppingListContent.class);
+                intent.putExtra("listId", tmpId);
+                startActivity(intent);
 
             }
         });

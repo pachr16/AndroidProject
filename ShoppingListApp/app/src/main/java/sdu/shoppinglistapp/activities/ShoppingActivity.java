@@ -9,21 +9,16 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.business.SectionsStatePagerAdapter;
 
 //All used fragments
-import sdu.shoppinglistapp.businessFragments.FragmentShoppingListContent;
 import sdu.shoppinglistapp.businessFragments.FragmentShoppingListOverview;
 import sdu.shoppinglistapp.businessFragments.FragmentShoppingMain;
 import sdu.shoppinglistapp.services.ListService;

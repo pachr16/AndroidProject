@@ -4,9 +4,9 @@ public class ShopItem {
 
     private String amount;
     private String product;
-    private boolean picked;
+    private String picked;
 
-    public ShopItem(String amount, String product, boolean picked) {
+    public ShopItem(String amount, String product, String picked) {
         this.amount = amount;
         this.product = product;
         this.picked = picked;
@@ -28,11 +28,11 @@ public class ShopItem {
         this.product = product;
     }
 
-    public boolean isPicked() {
+    public String getPicked() {
         return picked;
     }
 
-    public void setPicked(boolean picked) {
+    public void setPicked(String picked) {
         this.picked = picked;
     }
 }

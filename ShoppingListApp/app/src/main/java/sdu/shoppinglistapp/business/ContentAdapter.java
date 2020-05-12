@@ -42,4 +42,5 @@ public class ContentAdapter extends ArrayAdapter {
 
         return view;
     }
+
 }

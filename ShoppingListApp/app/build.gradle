@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'  // firebase analytics SDK
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
     // firestore (firebase cloud database service) SDK
+    implementation 'org.greenrobot:eventbus:3.2.0' //EventBus for handling data between fragments
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

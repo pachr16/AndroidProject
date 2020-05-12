@@ -1,6 +1,6 @@
 package sdu.shoppinglistapp.businessFragments;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,17 +22,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.activities.ShoppingActivity;
+import sdu.shoppinglistapp.activities.ShoppingListContent;
+import sdu.shoppinglistapp.business.FragmentCommunication;
 import sdu.shoppinglistapp.business.OverViewAdapter;
 import sdu.shoppinglistapp.business.ShoppingList;
 
 public class FragmentShoppingListOverview extends Fragment {
 
-    //Interface from buttom of the class
-    FragmentData fragData;
+    EventBus bus = EventBus.getDefault();
 
     ListView listView;
 
@@ -95,11 +98,6 @@ public class FragmentShoppingListOverview extends Fragment {
                     arrayAdapter.notifyDataSetChanged();
 
                 }
-//                String entryOnList = dataSnapshot.getValue(String.class);
-//                String[] listNameParts = entryOnList.split("_");
-//                String listName = listNameParts[1];
-//                shoplistOverview.add(listName);
-//                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -131,7 +129,16 @@ public class FragmentShoppingListOverview extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText((ShoppingActivity)getActivity(), shoplistOverview.get(position).getName(), Toast.LENGTH_SHORT).show();
 
-                fragData.sendData(shoplistOverview.get(position).getId());
+                //Sending the id of the clicked list to the bus in order to get this id for the listner on the list fragment
+                String tmpId = shoplistOverview.get(position).getId();
+                Log.d("EventBus", "onItemClick: tmpId = " + tmpId);
+                FragmentCommunication event = new FragmentCommunication();
+                event.setNewText(tmpId);
+                EventBus.getDefault().post(event);
+
+                //Changing to ListContent fragment which is index 2 in the ViewPager
+                startActivity(new Intent((ShoppingActivity)getContext(), ShoppingListContent.class));
+
             }
         });
 
@@ -172,7 +179,7 @@ public class FragmentShoppingListOverview extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Toast.makeText((ShoppingActivity)getActivity(), dataSnapshot.getValue() + "", Toast.LENGTH_SHORT).show();
-                    content.add((String) snapshot.getValue());
+                    content.add((String) snapshot.getKey());
                 }
             }
 
@@ -184,20 +191,5 @@ public class FragmentShoppingListOverview extends Fragment {
 
 
         return content;
-    }
-
-    interface FragmentData {
-        void sendData(String message);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            fragData = (FragmentData) (ShoppingActivity)getActivity();
-        } catch(ClassCastException cce) {
-            throw new ClassCastException("Error in retrieving Data");
-        }
     }
 }

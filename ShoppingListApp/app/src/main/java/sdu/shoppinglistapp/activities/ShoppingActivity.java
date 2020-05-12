@@ -1,5 +1,6 @@
 package sdu.shoppinglistapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class ShoppingActivity extends AppCompatActivity {
     private SectionsStatePagerAdapter mSectionStatePagerAdapter;
     private ViewPager mViewPager;
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +69,7 @@ public class ShoppingActivity extends AppCompatActivity {
         SectionsStatePagerAdapter adapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentShoppingMain(), "Main shopping fragment");
         adapter.addFragment(new FragmentShoppingListOverview(), "List overview");
-        adapter.addFragment(new FragmentShoppingListContent(), "List Content");
+        //adapter.addFragment(new FragmentShoppingListContent(), "List Content");
         viewPager.setAdapter(adapter);
     }
 
@@ -94,4 +96,6 @@ public class ShoppingActivity extends AppCompatActivity {
 
         Toast.makeText(ShoppingActivity.this, "List created", Toast.LENGTH_SHORT).show();
     }
+
+
 }

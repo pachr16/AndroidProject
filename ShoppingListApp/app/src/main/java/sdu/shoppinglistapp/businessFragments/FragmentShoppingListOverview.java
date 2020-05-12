@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 
 import sdu.shoppinglistapp.R;
 import sdu.shoppinglistapp.activities.ShoppingActivity;
+import sdu.shoppinglistapp.business.OverViewAdapter;
+import sdu.shoppinglistapp.business.ShoppingList;
 
 public class FragmentShoppingListOverview extends Fragment {
 
@@ -42,7 +46,7 @@ public class FragmentShoppingListOverview extends Fragment {
         listView = view.findViewById(R.id.overViewListView);
 
         final ArrayList<String> subList = new ArrayList<>();
-        final ArrayList<String> shoplistOverview = new ArrayList<>();
+        final ArrayList<ShoppingList> shoplistOverview = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
@@ -65,7 +69,8 @@ public class FragmentShoppingListOverview extends Fragment {
             }
         });
 
-        final ArrayAdapter arrayAdapter = new ArrayAdapter((ShoppingActivity) getActivity(), android.R.layout.simple_list_item_1, shoplistOverview);
+        //OverViewAdapter is a custom overwritten class for displaying specific object attributes on the listView
+        final OverViewAdapter arrayAdapter = new OverViewAdapter((ShoppingActivity) getActivity(), android.R.layout.simple_list_item_1, shoplistOverview);
 
         listView.setAdapter(arrayAdapter);
 
@@ -80,7 +85,10 @@ public class FragmentShoppingListOverview extends Fragment {
                 if (subList.contains(dataSnapshot.child("listName").getValue())) {
                     Log.d("test", "onChildAdded: snapshot: " + dataSnapshot.getKey());
 
-                    shoplistOverview.add(dataSnapshot.child("listName").getValue().toString());
+                    ArrayList<String> subscribers = getSubscribers(dataSnapshot.getKey());
+                    ArrayList<String> content = getContent(dataSnapshot.getKey());
+
+                    shoplistOverview.add(new ShoppingList(dataSnapshot.getKey(), dataSnapshot.child("listName").getValue().toString(), subscribers, content));
                     arrayAdapter.notifyDataSetChanged();
 
                 }
@@ -115,6 +123,61 @@ public class FragmentShoppingListOverview extends Fragment {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText((ShoppingActivity)getActivity(), shoplistOverview.get(position).getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
         return view;
+    }
+
+    private ArrayList<String> getSubscribers(String listName) {
+        final ArrayList<String> subscribers = new ArrayList<>();
+        DatabaseReference tmpRef = database.getReference("shoppingLists/" + listName + "/subscribers");
+
+        tmpRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Toast.makeText((ShoppingActivity)getActivity(), dataSnapshot.getValue() + "", Toast.LENGTH_SHORT).show();
+                    subscribers.add((String) snapshot.getValue());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return subscribers;
+    }
+
+    private ArrayList<String> getContent(String listName) {
+        final ArrayList<String> content = new ArrayList<>();
+
+        DatabaseReference tmpRef = database.getReference("shoppingLists/" + listName + "/content");
+
+        tmpRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Toast.makeText((ShoppingActivity)getActivity(), dataSnapshot.getValue() + "", Toast.LENGTH_SHORT).show();
+                    content.add((String) snapshot.getValue());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        return content;
     }
 }

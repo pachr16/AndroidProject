@@ -1,12 +1,12 @@
 package sdu.shoppinglistapp.businessFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,6 +30,9 @@ import sdu.shoppinglistapp.business.OverViewAdapter;
 import sdu.shoppinglistapp.business.ShoppingList;
 
 public class FragmentShoppingListOverview extends Fragment {
+
+    //Interface from buttom of the class
+    FragmentData fragData;
 
     ListView listView;
 
@@ -127,6 +130,8 @@ public class FragmentShoppingListOverview extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText((ShoppingActivity)getActivity(), shoplistOverview.get(position).getName(), Toast.LENGTH_SHORT).show();
+
+                fragData.sendData(shoplistOverview.get(position).getId());
             }
         });
 
@@ -179,5 +184,20 @@ public class FragmentShoppingListOverview extends Fragment {
 
 
         return content;
+    }
+
+    interface FragmentData {
+        void sendData(String message);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            fragData = (FragmentData) (ShoppingActivity)getActivity();
+        } catch(ClassCastException cce) {
+            throw new ClassCastException("Error in retrieving Data");
+        }
     }
 }

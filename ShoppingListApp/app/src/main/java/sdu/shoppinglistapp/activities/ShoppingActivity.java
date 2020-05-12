@@ -75,6 +75,8 @@ public class ShoppingActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(fragmentNumber);
     }
 
+
+
     public void createNewList(String listName) {
         Log.d("login", "createNewList: userid = " + mAuth.getCurrentUser().getUid());
 

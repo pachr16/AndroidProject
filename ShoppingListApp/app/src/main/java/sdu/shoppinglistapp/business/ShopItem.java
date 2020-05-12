@@ -1,63 +1,28 @@
 package sdu.shoppinglistapp.business;
 
-import java.io.Serializable;
+public class ShopItem {
 
-public class ShopItem implements Serializable {
-    private String itemString = "";
-    private boolean checkmarked = false;
-    private String addedBy;
-    private String id = "";
+    private String amount;
+    private String product;
 
-
-    /**
-     * for creating a new item that has not yet been given an id
-     * @param itemString
-     * @param username
-     */
-    public ShopItem(String itemString, String username) {
-        this.itemString = itemString;
-        this.addedBy = username;
+    public ShopItem(String amount, String product) {
+        this.amount = amount;
+        this.product = product;
     }
 
-    /**
-     * for creating existing items from the database
-     * @param itemString
-     * @param checkmarked
-     * @param username
-     * @param id
-     */
-    public ShopItem(String itemString, boolean checkmarked, String username, String id) {
-        this.itemString = itemString;
-        this.checkmarked = checkmarked;
-        this.addedBy = username;
-        this.id = id;
+    public String getAmount() {
+        return amount;
     }
 
-    public String getId() {
-        return id;
+    public void setAmount(String amount) {
+        this.amount = amount;
     }
 
-    public String getItemString() {
-        return itemString;
+    public String getProduct() {
+        return product;
     }
 
-    public String getAddedBy() {
-        return addedBy;
-    }
-
-    public boolean isCheckmarked() {
-        return checkmarked;
-    }
-
-    public void flipCheckmarked() {
-        if (this.checkmarked) {
-            checkmarked = false;
-        } else {
-            checkmarked = true;
-        }
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setProduct(String product) {
+        this.product = product;
     }
 }

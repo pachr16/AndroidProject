@@ -17,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import static android.widget.Toast.LENGTH_LONG;
 
 public class ListService extends IntentService {
+    private static String activeList;
     FirebaseDatabase db;
     DatabaseReference myRef;
 
@@ -30,7 +31,6 @@ public class ListService extends IntentService {
         super.onCreate();
         Log.v("List", "ListService has started.");
         db = FirebaseDatabase.getInstance();
-        myRef = db.getReference("lists/");
     }
 
     @Override
@@ -42,6 +42,7 @@ public class ListService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        myRef = db.getReference("lists/" + getActiveList());
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -57,5 +58,13 @@ public class ListService extends IntentService {
             }
         });
 
+    }
+
+    public String getActiveList() {
+        return activeList;
+    }
+
+    public static void setActiveList(String activeList) {
+        ListService.activeList = activeList;
     }
 }

@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,7 @@ import sdu.shoppinglistapp.activities.ShoppingActivity;
 import sdu.shoppinglistapp.activities.ShoppingListContent;
 import sdu.shoppinglistapp.business.OverViewAdapter;
 import sdu.shoppinglistapp.business.ShoppingList;
+import sdu.shoppinglistapp.services.ListService;
 
 public class FragmentShoppingListOverview extends Fragment {
 
@@ -60,7 +62,7 @@ public class FragmentShoppingListOverview extends Fragment {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     Log.d("sublist", "onDataChange: value: " + ds.getValue().toString());
                     String[] strArray = (ds.getValue().toString()).split("_");
-                    subList.add(strArray[1]);
+                    subList.add(strArray[0]);
                 }
             }
 
@@ -127,6 +129,7 @@ public class FragmentShoppingListOverview extends Fragment {
 
                 String tmpId = shoplistOverview.get(position).getId();
                 Log.d("EventBus", "onItemClick: tmpId = " + tmpId);
+                ListService.setActiveList(tmpId);
                 Intent intent = new Intent((ShoppingActivity)getContext(), ShoppingListContent.class);
                 intent.putExtra("listId", tmpId);
                 startActivity(intent);

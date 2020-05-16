@@ -62,7 +62,7 @@ public class FragmentShoppingListOverview extends Fragment {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     Log.d("sublist", "onDataChange: value: " + ds.getValue().toString());
                     String[] strArray = (ds.getValue().toString()).split("_");
-                    subList.add(strArray[0]);
+                    subList.add(strArray[1]);
                 }
             }
 
@@ -83,7 +83,7 @@ public class FragmentShoppingListOverview extends Fragment {
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("test", "onChildAdded: " + dataSnapshot.child("listName").getValue());
+                Log.d("test", "onChildAdded: added " + dataSnapshot.child("listName").getValue());
 
                 if (subList.contains(dataSnapshot.child("listName").getValue())) {
                     Log.d("test", "onChildAdded: snapshot: " + dataSnapshot.getKey());
@@ -99,7 +99,18 @@ public class FragmentShoppingListOverview extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                arrayAdapter.notifyDataSetChanged();
+                Log.d("test", "onChildAdded: changed " + dataSnapshot.child("listName").getValue());
+
+                if (subList.contains(dataSnapshot.child("listName").getValue())) {
+                    Log.d("test", "onChildAdded: snapshot: " + dataSnapshot.getKey());
+
+                    ArrayList<String> subscribers = getSubscribers(dataSnapshot.getKey());
+                    ArrayList<String> content = getContent(dataSnapshot.getKey());
+
+                    shoplistOverview.add(new ShoppingList(dataSnapshot.getKey(), dataSnapshot.child("listName").getValue().toString(), subscribers, content));
+                    arrayAdapter.notifyDataSetChanged();
+
+                }
             }
 
             @Override

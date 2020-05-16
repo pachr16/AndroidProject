@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,9 @@ public class ShoppingListContent extends AppCompatActivity {
     ListView content;
     EditText amount;
     EditText product;
+    EditText addPerson;
     Button btn_addToList;
+    Button btn_addPerson;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
@@ -51,7 +54,9 @@ public class ShoppingListContent extends AppCompatActivity {
         content = findViewById(R.id.content_listView);
         amount = findViewById(R.id.content_amount);
         product = findViewById(R.id.content_product);
+        addPerson = findViewById(R.id.content_addPerson);
         btn_addToList = findViewById(R.id.btn_addToList);
+        btn_addPerson = findViewById(R.id.btn_addPerson);
 
         final ContentAdapter contentAdapter = new ContentAdapter(ShoppingListContent.this, R.layout.content_view_layout, contentList);
 
@@ -81,21 +86,7 @@ public class ShoppingListContent extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //Added the same code as when adding as the list doesn't update realtime to new entries
-                if(dataSnapshot.child("picked").getValue() != null) {
-                    Log.d("something", "onChildAdded: picked = " + dataSnapshot.child("picked").getValue().toString());
-                    if (product.getText().toString() == "" || amount.getText().toString() == "") {
-                        Toast.makeText(ShoppingListContent.this, "Unable to add nothing to the list", Toast.LENGTH_SHORT).show();
-                    } else {
-
-                        ShopItem newItem = new ShopItem(dataSnapshot.child("amount").getValue().toString(), dataSnapshot.child("product").getValue().toString(), dataSnapshot.child("picked").getValue().toString());
-
-                        Log.d("ItemOnList", "onChildAdded: entered added method");
-                        contentList.add(newItem);
-                        Log.d("ItemOnList", "onChildAdded: " + contentList.get(0).getProduct());
-                        contentAdapter.notifyDataSetChanged();
-                    }
-                }
+                contentAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -123,6 +114,53 @@ public class ShoppingListContent extends AppCompatActivity {
                     addItemToList(listId, amount.getText().toString(), product.getText().toString());
                     Toast.makeText(ShoppingListContent.this, "Item has been added to the list", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btn_addPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(addPerson.getText().toString().equals("")) {
+                    Toast.makeText(ShoppingListContent.this, "Please enter a screen name", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    final String tmpUser = addPerson.getText().toString();
+                    final String[] foundUser = {""};
+
+                    myRef = database.getReference("users");
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                Log.d("test", "onDataChange: userId " + ds.child("screen_name").getValue().toString());
+                                //Log.d("test", "onDataChange: tmpUser " + tmpUser);
+                                //Log.d("test", "onDataChange: firebase " + ds.child("screen_name").getValue().toString());
+                                if (ds.child("screen_name").getValue().toString().equals(tmpUser)) {
+                                    Log.d("test", "onDataChange: User found");
+                                    foundUser[0] = ds.child("user_id").getValue().toString().trim();
+                                    Log.d("test", "onDataChange: userId " + foundUser[0]);
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    if(foundUser[0].equals("")) {
+                        myRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
+                        myRef.child(listId).setValue(listId);
+                        addPerson.setText("");
+                    } else {
+                        Toast.makeText(ShoppingListContent.this, (foundUser[0] + " User not found"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+
             }
         });
 

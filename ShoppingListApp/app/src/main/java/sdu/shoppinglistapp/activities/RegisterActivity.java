@@ -73,7 +73,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Log.d("createNewUser", "createUserWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         updateUI(user);
 
@@ -139,7 +138,6 @@ public class RegisterActivity extends AppCompatActivity {
     public void updateUI(FirebaseUser currentUser) {
         if (currentUser != null) {
             Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
-            Log.d("createNewUser", "updateUI: user logged in with id: " + mAuth.getCurrentUser().getUid());
             startActivity(new Intent(this, ShoppingActivity.class));
         } else {
             Toast.makeText(this, "Please log in for access", Toast.LENGTH_SHORT).show();

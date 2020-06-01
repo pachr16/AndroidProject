@@ -37,8 +37,6 @@ public class FragmentShoppingListOverview extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference slRef;
-    private DatabaseReference subRef;
 
     @Nullable
     @Override
@@ -52,7 +50,7 @@ public class FragmentShoppingListOverview extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
-        subRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
+        DatabaseReference subRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
 
         subRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,7 +75,7 @@ public class FragmentShoppingListOverview extends Fragment {
         listView.setAdapter(arrayAdapter);
 
 
-        slRef = database.getReference("shoppingLists");
+        DatabaseReference slRef = database.getReference("shoppingLists");
 
         slRef.addChildEventListener(new ChildEventListener() {
             @Override

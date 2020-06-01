@@ -37,7 +37,6 @@ public class ShoppingListContent extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userRef;
     private DatabaseReference subRef;
-    private DatabaseReference contentRef;
     private DatabaseReference productRef;
     private DatabaseReference amountRef;
     private DatabaseReference pickedRef;
@@ -66,7 +65,7 @@ public class ShoppingListContent extends AppCompatActivity {
 
         content.setAdapter(contentAdapter);
 
-        contentRef = database.getReference("shoppingLists/" + listId + "/content");
+        DatabaseReference contentRef = database.getReference("shoppingLists/" + listId + "/content");
 
         contentRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -128,7 +127,7 @@ public class ShoppingListContent extends AppCompatActivity {
                     final String tmpUser = addPerson.getText().toString();
                     final String[] foundUser = {""};
 
-                    userRef = database.getReference("users");
+                    DatabaseReference userRef = database.getReference("users");
                     userRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -147,7 +146,7 @@ public class ShoppingListContent extends AppCompatActivity {
                     });
 
                     if(foundUser[0].equals("")) {
-                        subRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
+                        DatabaseReference subRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
                         subRef.child(listId).setValue(listId);
                         addPerson.setText("");
                     } else {
@@ -162,13 +161,13 @@ public class ShoppingListContent extends AppCompatActivity {
     }
 
     public void addItemToList(String listId, String amount, String product) {
-        amountRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/amount");
+        DatabaseReference amountRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/amount");
         amountRef.setValue(amount);
 
-        productRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/product");
+        DatabaseReference productRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/product");
         productRef.setValue(product);
 
-        pickedRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/picked");
+        DatabaseReference pickedRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/picked");
         pickedRef.setValue("false");
     }
 }

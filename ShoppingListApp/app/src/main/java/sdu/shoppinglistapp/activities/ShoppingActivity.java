@@ -30,9 +30,6 @@ public class ShoppingActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference listRef;
-    private DatabaseReference subRef;
-    private DatabaseReference subToRef;
 
     private SectionsStatePagerAdapter mSectionStatePagerAdapter;
     private ViewPager mViewPager;
@@ -81,14 +78,14 @@ public class ShoppingActivity extends AppCompatActivity {
 
         String listId = mAuth.getCurrentUser().getUid() + "_" + listName;
 
-        listRef = mFirebaseDatabase.getReference("shoppingLists/" + listId);
+        DatabaseReference listRef = mFirebaseDatabase.getReference("shoppingLists/" + listId);
 
         listRef.child("listName").setValue(listName);
 
-        subRef = mFirebaseDatabase.getReference("shoppingLists/" + listId + "/subscribers");
+        DatabaseReference subRef = mFirebaseDatabase.getReference("shoppingLists/" + listId + "/subscribers");
         subRef.push().setValue(mAuth.getCurrentUser().getUid());
 
-        subToRef = mFirebaseDatabase.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
+        DatabaseReference subToRef = mFirebaseDatabase.getReference("users/" + mAuth.getCurrentUser().getUid() + "/subscribed_to");
         subToRef.child(listId).setValue(listId);
 
         Toast.makeText(ShoppingActivity.this, "List created", Toast.LENGTH_SHORT).show();

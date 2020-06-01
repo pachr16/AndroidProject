@@ -132,11 +132,19 @@ public class ShoppingListContent extends AppCompatActivity {
                     userRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            boolean foundOne = false;
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if (ds.child("screen_name").getValue().toString().equals(tmpUser)) {
                                     foundUser[0] = ds.child("user_id").getValue().toString().trim();
+                                    subRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
+                                    subRef.child(listId).setValue(listId);
+                                    addPerson.setText("");
+                                    foundOne = true;
                                     break;
                                 }
+                            }
+                            if(!foundOne){
+                                Toast.makeText(ShoppingListContent.this, (foundUser[0] + " User not found"), Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -145,14 +153,6 @@ public class ShoppingListContent extends AppCompatActivity {
 
                         }
                     });
-
-                    if(foundUser[0].equals("")) {
-                        subRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
-                        subRef.child(listId).setValue(listId);
-                        addPerson.setText("");
-                    } else {
-                        Toast.makeText(ShoppingListContent.this, (foundUser[0] + " User not found"), Toast.LENGTH_SHORT).show();
-                    }
                 }
 
 

@@ -156,7 +156,6 @@ public class FragmentShoppingListOverview extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Toast.makeText((ShoppingActivity)getActivity(), dataSnapshot.getValue() + "", Toast.LENGTH_SHORT).show();
                     subscribers.add((String) snapshot.getValue());
                 }
             }
@@ -179,7 +178,6 @@ public class FragmentShoppingListOverview extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Toast.makeText((ShoppingActivity)getActivity(), dataSnapshot.getValue() + "", Toast.LENGTH_SHORT).show();
                     content.add((String) snapshot.getKey());
                 }
             }

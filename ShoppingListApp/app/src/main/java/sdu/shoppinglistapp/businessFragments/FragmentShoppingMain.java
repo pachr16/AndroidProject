@@ -1,5 +1,6 @@
 package sdu.shoppinglistapp.businessFragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import sdu.shoppinglistapp.R;
+import sdu.shoppinglistapp.activities.LoginActivity;
 import sdu.shoppinglistapp.activities.ShoppingActivity;
+import sdu.shoppinglistapp.activities.ShoppingListContent;
 
 public class FragmentShoppingMain extends Fragment {
 
@@ -30,6 +33,7 @@ public class FragmentShoppingMain extends Fragment {
     EditText listName;
     Button btnCreateList;
     Button btnViewLists;
+    Button logout;
 
     @Nullable
     @Override
@@ -40,6 +44,7 @@ public class FragmentShoppingMain extends Fragment {
         listName = view.findViewById(R.id.shopping_createList);
         btnCreateList = view.findViewById(R.id.btn_shopping_createList);
         btnViewLists = view.findViewById(R.id.btn_shopping_viewLists);
+        logout = view.findViewById(R.id.logout);
 
         btnCreateList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +62,14 @@ public class FragmentShoppingMain extends Fragment {
             }
         });
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent((ShoppingActivity)getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }

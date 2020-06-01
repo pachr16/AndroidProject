@@ -27,7 +27,6 @@ public class ShopList implements Serializable {
     private ArrayList<ShopItem> items = new ArrayList<>();
     private FirebaseFirestore fdb = FirebaseFirestore.getInstance();
 
-    private DbHandler dbh = DbHandler.getInstance();  // instance of singleton DbHandler class
 
     /**
      * for creating a new empty shoplist that has not yet been given id, nor a name
@@ -70,7 +69,7 @@ public class ShopList implements Serializable {
     }
 
     // *** METHODS TO MUTATE LISTS / ITEMS ON LISTS BELOW HERE ***
-    // add / remove user from list
+
     public void addUserToList(String email) {
         this.updateTimeStamp();
 

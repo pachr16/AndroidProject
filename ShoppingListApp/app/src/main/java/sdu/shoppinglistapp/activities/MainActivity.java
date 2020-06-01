@@ -23,21 +23,23 @@ import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class MainActivity extends AppCompatActivity {
     private User user = null;
-    private DbHandler dbh = DbHandler.getInstance();
+    private static MainActivity instance;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
 
         // FOR TESTING PURPOSES:
         ArrayList<ShopList> slist = new ArrayList<>();
 
         ArrayList<ShopItem> ilist = new ArrayList<>();
         ilist.add(new ShopItem("thisisanitem", false, "ThisisaScreenName", ""));
-
-        //slist.add(new ShopList(0, "thisisalist", 109850923, ilist, map));
-        //user = new User("Patrick", "email", "testuserid", slist);
 
         /*
         HashMap<String, String> map = new HashMap<>();
@@ -46,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
          */
 
+        //slist.add(new ShopList(0, "thisisalist", 109850923, ilist, map));
+        //user = new User("Patrick", "email", "testuserid", slist);
 
-        // END OF TESTING PURPOSES
+        // ****** END OF TESTING PURPOSES
 
         Log.d("MyTag", "onCreate: Main found");
     }

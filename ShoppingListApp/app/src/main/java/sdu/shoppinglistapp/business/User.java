@@ -11,7 +11,6 @@ public class User implements Serializable {
     private String password = "";
     private String userID;
     private ArrayList<ShopList> subscribedShopLists;
-    private DbHandler dbh = DbHandler.getInstance();
 
 
     /**

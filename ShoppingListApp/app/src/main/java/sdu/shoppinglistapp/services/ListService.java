@@ -19,7 +19,6 @@ import static android.widget.Toast.LENGTH_LONG;
 public class ListService extends IntentService {
     private static String activeList;
     FirebaseDatabase db;
-    DatabaseReference actListRef;
 
     public ListService() {
         super("ListService");
@@ -41,7 +40,7 @@ public class ListService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        actListRef = db.getReference("lists/" + getActiveList());
+        DatabaseReference actListRef = db.getReference("shoppingLists/" + getActiveList());
         actListRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

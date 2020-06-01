@@ -26,13 +26,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef;
 
-    EditText screenName;
-    EditText email;
-    EditText password1;
-    EditText password2;
-    Button btn_register;
+    private EditText screenName;
+    private EditText email;
+    private EditText password1;
+    private EditText password2;
+    private Button btn_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +77,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                                         Log.d("createNewUser", "onComplete: new user id = " + mAuth.getCurrentUser().getUid());
 
-                                        myRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/screen_name");
-                                        myRef.setValue(screenName.getText().toString());
+                                        DatabaseReference snRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/screen_name");
+                                        snRef.setValue(screenName.getText().toString());
 
-                                        myRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/user_id");
-                                        myRef.setValue(mAuth.getCurrentUser().getUid());
+                                        DatabaseReference idRef = database.getReference("users/" + mAuth.getCurrentUser().getUid() + "/user_id");
+                                        idRef.setValue(mAuth.getCurrentUser().getUid());
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w("createNewUser", "createUserWithEmail:failure", task.getException());

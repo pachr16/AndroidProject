@@ -37,7 +37,7 @@ public class FragmentShoppingListOverview extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef;
+    private DatabaseReference slRef;
     private DatabaseReference subRef;
 
     @Nullable
@@ -77,9 +77,9 @@ public class FragmentShoppingListOverview extends Fragment {
         listView.setAdapter(arrayAdapter);
 
 
-        myRef = database.getReference("shoppingLists");
+        slRef = database.getReference("shoppingLists");
 
-        myRef.addChildEventListener(new ChildEventListener() {
+        slRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d("test", "onChildAdded: added " + dataSnapshot.child("listName").getValue());
@@ -98,10 +98,7 @@ public class FragmentShoppingListOverview extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("test", "onChildAdded: changed " + dataSnapshot.child("listName").getValue());
-
                 if (subList.contains(dataSnapshot.child("listName").getValue())) {
-                    Log.d("test", "onChildAdded: snapshot: " + dataSnapshot.getKey());
 
                     ArrayList<String> subscribers = getSubscribers(dataSnapshot.getKey());
                     ArrayList<String> content = getContent(dataSnapshot.getKey());
@@ -138,7 +135,6 @@ public class FragmentShoppingListOverview extends Fragment {
 
 
                 String tmpId = shoplistOverview.get(position).getId();
-                Log.d("EventBus", "onItemClick: tmpId = " + tmpId);
                 ListService.setActiveList(tmpId);
                 Intent intent = new Intent((ShoppingActivity)getContext(), ShoppingListContent.class);
                 intent.putExtra("listId", tmpId);

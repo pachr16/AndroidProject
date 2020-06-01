@@ -35,7 +35,12 @@ public class ShoppingListContent extends AppCompatActivity {
     Button btn_addPerson;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef;
+    private DatabaseReference userRef;
+    private DatabaseReference subRef;
+    private DatabaseReference contentRef;
+    private DatabaseReference productRef;
+    private DatabaseReference amountRef;
+    private DatabaseReference pickedRef;
 
     private String listId;
 
@@ -46,7 +51,6 @@ public class ShoppingListContent extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list_content);
 
         listId = getIntent().getExtras().getString("listId");
-        Log.d("listId", "onCreate: " + listId);
 
 
         final ArrayList<ShopItem> contentList = new ArrayList<>();
@@ -62,23 +66,19 @@ public class ShoppingListContent extends AppCompatActivity {
 
         content.setAdapter(contentAdapter);
 
-        myRef = database.getReference("shoppingLists/" + listId + "/content");
-        Log.d("ItemOnList", "onCreateView: Sample text ");
+        contentRef = database.getReference("shoppingLists/" + listId + "/content");
 
-        myRef.addChildEventListener(new ChildEventListener() {
+        contentRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.child("picked").getValue() != null) {
-                    Log.d("something", "onChildAdded: picked = " + dataSnapshot.child("picked").getValue().toString());
                     if (product.getText().toString() == "" || amount.getText().toString() == "") {
                         Toast.makeText(ShoppingListContent.this, "Unable to add nothing to the list", Toast.LENGTH_SHORT).show();
                     } else {
 
                         ShopItem newItem = new ShopItem(dataSnapshot.child("amount").getValue().toString(), dataSnapshot.child("product").getValue().toString(), dataSnapshot.child("picked").getValue().toString());
 
-                        Log.d("ItemOnList", "onChildAdded: entered added method");
                         contentList.add(newItem);
-                        Log.d("ItemOnList", "onChildAdded: " + contentList.get(0).getProduct());
                         contentAdapter.notifyDataSetChanged();
                     }
                 }
@@ -128,18 +128,13 @@ public class ShoppingListContent extends AppCompatActivity {
                     final String tmpUser = addPerson.getText().toString();
                     final String[] foundUser = {""};
 
-                    myRef = database.getReference("users");
-                    myRef.addValueEventListener(new ValueEventListener() {
+                    userRef = database.getReference("users");
+                    userRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                Log.d("test", "onDataChange: userId " + ds.child("screen_name").getValue().toString());
-                                //Log.d("test", "onDataChange: tmpUser " + tmpUser);
-                                //Log.d("test", "onDataChange: firebase " + ds.child("screen_name").getValue().toString());
                                 if (ds.child("screen_name").getValue().toString().equals(tmpUser)) {
-                                    Log.d("test", "onDataChange: User found");
                                     foundUser[0] = ds.child("user_id").getValue().toString().trim();
-                                    Log.d("test", "onDataChange: userId " + foundUser[0]);
                                     break;
                                 }
                             }
@@ -152,8 +147,8 @@ public class ShoppingListContent extends AppCompatActivity {
                     });
 
                     if(foundUser[0].equals("")) {
-                        myRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
-                        myRef.child(listId).setValue(listId);
+                        subRef = database.getReference("users/" + foundUser[0] + "/subscribed_to");
+                        subRef.child(listId).setValue(listId);
                         addPerson.setText("");
                     } else {
                         Toast.makeText(ShoppingListContent.this, (foundUser[0] + " User not found"), Toast.LENGTH_SHORT).show();
@@ -167,13 +162,13 @@ public class ShoppingListContent extends AppCompatActivity {
     }
 
     public void addItemToList(String listId, String amount, String product) {
-        myRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/amount");
-        myRef.setValue(amount);
+        amountRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/amount");
+        amountRef.setValue(amount);
 
-        myRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/product");
-        myRef.setValue(product);
+        productRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/product");
+        productRef.setValue(product);
 
-        myRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/picked");
-        myRef.setValue("false");
+        pickedRef = database.getReference("shoppingLists/" + listId + "/content/" + product + "/picked");
+        pickedRef.setValue("false");
     }
 }

@@ -12,10 +12,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import sdu.shoppinglistapp.R;
-import sdu.shoppinglistapp.persistence.DbHandler;
 
 public class MainActivity extends AppCompatActivity {
-    private DbHandler dbh = DbHandler.getInstance();
 
     Button logout;
 
@@ -35,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // END OF TESTING PURPOSES
 
         Log.d("MyTag", "onCreate: Main found");
     }
